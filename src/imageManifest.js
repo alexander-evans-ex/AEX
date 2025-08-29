@@ -1,0 +1,101 @@
+// Image manifest - generated from actual files in src/assets/images/
+// This ensures we only reference images that actually exist
+
+export const imageManifest = [
+    '/src/assets/images/Alexander_Evans_Experience_1.webp',
+    '/src/assets/images/Alexander_Evans_Experience_2.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_3.webp',
+    '/src/assets/images/Alexander_Evans_Experience_4.webp',
+    '/src/assets/images/Alexander_Evans_Experience_5.webp',
+    '/src/assets/images/Alexander_Evans_Experience_6.webp',
+    '/src/assets/images/Alexander_Evans_Experience_7.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_8.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_9.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_10.webp',
+    '/src/assets/images/Alexander_Evans_Experience_11.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_12.webp',
+    '/src/assets/images/Alexander_Evans_Experience_13.webp',
+    '/src/assets/images/Alexander_Evans_Experience_14.webp',
+    '/src/assets/images/Alexander_Evans_Experience_15.webp',
+    '/src/assets/images/Alexander_Evans_Experience_16.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_17.webp',
+    '/src/assets/images/Alexander_Evans_Experience_18.webp',
+    '/src/assets/images/Alexander_Evans_Experience_19.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_20.webp',
+    '/src/assets/images/Alexander_Evans_Experience_21.webp',
+    '/src/assets/images/Alexander_Evans_Experience_22.webp',
+    '/src/assets/images/Alexander_Evans_Experience_23.webp',
+    '/src/assets/images/Alexander_Evans_Experience_24.webp',
+    '/src/assets/images/Alexander_Evans_Experience_25.webp',
+    '/src/assets/images/Alexander_Evans_Experience_26.webp',
+    '/src/assets/images/Alexander_Evans_Experience_27.webp',
+    '/src/assets/images/Alexander_Evans_Experience_28.webp',
+    '/src/assets/images/Alexander_Evans_Experience_29.webp',
+    '/src/assets/images/Alexander_Evans_Experience_30.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_31.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_32.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_33.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_34.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_35.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_36.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_37.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_38.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_39.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_40.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_41.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_42.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_43.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_44.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_45.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_46.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_47.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_48.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_49.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_50.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_51.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_52.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_53.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_54.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_55.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_56.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_57.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_58.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_59.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_60.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_61.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_62.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_63.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_64.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_65.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_66.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_67.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_68.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_69.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_70.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_71.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_72.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_73.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_74.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_75.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_76.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_77.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_78.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_79.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_80.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_81.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_82.jpg',
+    '/src/assets/images/Alexander_Evans_Experience_83.jpg'
+];
+
+// Get a random image from the manifest
+export function getRandomImage() {
+    const randomIndex = Math.floor(Math.random() * imageManifest.length);
+    return imageManifest[randomIndex];
+}
+
+// Get total number of available images
+export function getImageCount() {
+    return imageManifest.length;
+}
+
+console.log(`Image manifest loaded: ${imageManifest.length} images available`);
