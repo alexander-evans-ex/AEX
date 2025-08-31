@@ -2,6 +2,7 @@ import './style.css'
 import { router } from './router.js'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import './imageManifest.js' // Import image manifest to ensure Vite processes all images
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
