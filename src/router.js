@@ -16,6 +16,7 @@ const routes = {
                     <h1 id="intro-title">Alexander Evans Experience<span class="blinking-cursor">_</span></h1>
                     <div id="menu-items">
                         <button data-section="about">About</button>
+                        <button data-section="carousel">Gallery</button>
                         <button data-section="shows">Shows</button>
                         <button data-section="projects">Projects</button>
                         <button data-section="shop">Shop</button>
@@ -30,7 +31,59 @@ const routes = {
                 <div id="about" class="dark-section">
                     <div id="about-content">
                         <p>We are a multi-functional marketing and production company dedicated to amplifying and elevating our clients.</p>
-                        <p>Our mission is to immerse global audiences in their vision through outlets such as custom set design, press, media management, and buyers’ brunches. The Alexander Evans Experience creates opportunities to showcase and spotlight today’s most innovative brands..</p>
+                        <p>Our mission is to immerse global audiences in their vision through outlets such as custom set design, press, media management, and buyers' brunches. The Alexander Evans Experience creates opportunities to showcase and spotlight today's most innovative brands..</p>
+                    </div>
+                </div>
+                <div id="carousel" class="light-section">
+                    <div class="carousel-container">
+                        <div class="carousel-track">
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 1">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 2">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 3">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 4">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 5">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 6">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 7">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 8">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 9">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 10">
+                            </div>
+                            <!-- Duplicate first 5 images for seamless loop -->
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 11">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 12">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 13">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 14">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 15">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div id="shows" class="light-section">
