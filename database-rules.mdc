@@ -1,0 +1,101 @@
+---
+alwaysApply: true
+---
+# rules.mdc
+
+## 🧭 Project Guardrails (Read First)
+- **Purpose:** Google Apps Script Web App to accept POST ticket requests and return typed GET data from Google Sheets tabs.
+- **Absolutely do not:**
+  - Change the Google Sheet ID unless explicitly asked.
+  - Rename or remove any existing sheet tabs: `AEXMain`, `AEXData`, `AEXShows`, `AEXProjects`, `AEXProducts`.
+  - Break the current JSON response shapes or field names.
+  - Add external network calls or 3P libraries (Apps Script only).
+- **When in doubt:** Keep current behavior; add features behind new functions or optional params.
+
+---
+
+## 📦 Tech Stack & Files
+- **Runtime:** Google Apps Script (Server-side JavaScript).
+- **Entrypoints:** `doPost(e)`, `doGet(e)`.
+- **Helpers:** `addToSheet`, `sendConfirmationEmail`, `sheetToObjectsGeneric`, `sheetToObjectsWithSchema`, `coerce`, `normalizeKey`, `respondJSON`.
+
+---
+
+## 🔐 Configuration
+- `const SHEET_ID = '174rUENhBQ6SZ89yPZWTaP4wISWU0GXbxDJLOPR00DsU';`  
+  Do not change unless instructed.
+- Allowed tabs:  
+  `const ALLOWED_TABS = ['AEXMain','AEXData','AEXShows','AEXProjects','AEXProducts'];`
+
+---
+
+## 📑 Data Contracts (Schemas)
+
+### AEXData
+Headers: `mainSection, mainSectionImages, vid1, vid2, vid3, aboutInfo`  
+Typing:
+- `mainSection` → string  
+- `mainSectionImages` → array (split on commas/newlines)  
+- `vid1`, `vid2`, `vid3`, `aboutInfo` → string
+
+### AEXShows
+Headers: `showId, showActive, showImage, showName, showDesc, showDate, showTime, showLocation`  
+Typing:
+- `showId` → string  
+- `showActive` → boolean (`true/yes/1` => true)  
+- Others → string
+
+### AEXProjects
+Headers: `projectId, projectActive, projectImage, projectName, projectText, projectVideo, projectImages`  
+Typing:
+- `projectId, projectImage, projectName, projectText, projectVideo` → string  
+- `projectActive` → boolean (`true/yes/1` => true)
+- `projectImages` → array (split commas/newlines)
+
+### AEXProducts
+Headers: `productId, productActive, imageUrl, productName, productDesc, productPrice, productSizes, productQty, stripeProductId`  
+Typing:
+- `productId, imageUrl, productName, productDesc, stripeProductId` → string  
+- `productActive` → boolean  
+- `productPrice, productQty` → number (parse numeric cells/strings)  
+- `productSizes` → array (split commas/newlines)
+
+### AEXMain
+- No fixed schema; use first row as headers → generic objects (keys normalized: spaces → `_`, non-word chars removed, leading digits prefixed).
+
+### AEXData
+Headers: `mainSection, mainSectionImages, vid1, vid2, vid3, aboutInfo`  
+Typing:
+- `mainSection, vid1, vid2, vid3, aboutInfo` → string  
+- `mainSectionImages` → array (split commas/newlines)
+
+**Example AEXData structure:**
+```javascript
+{
+  mainSection: "Welcome to Alexander Evans Experience",
+  mainSectionImages: ["image1.jpg", "image2.jpg"],
+  vid1: "https://alexanderevansexs.s3.us-east-2.amazonaws.com/videos/RECAP-4.mov",
+  vid2: "https://example.com/video2.mp4", 
+  vid3: "https://example.com/video3.mp4",
+  aboutInfo: "Innovative design and craftsmanship"
+}
+```
+
+**Usage:**
+- `vid1` is used for the main video in the video section
+- `mainSectionImages` provides images for the main section
+- `aboutInfo` contains the about section content
+
+---
+
+## 🌐 API Contracts
+
+### POST `/exec`
+**Body (JSON):**
+```json
+{
+  "email": "user@example.com",
+  "timestamp": "ISO-8601 optional",
+  "source": "AEX",
+  "tab": "AEXMain | AEXData | AEXShows | AEXProjects | AEXProducts (optional; default AEXMain)"
+}

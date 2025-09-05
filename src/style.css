@@ -238,7 +238,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4rem 2rem;
+    padding-top: 4rem 2rem;
     position: relative;
     z-index: 5;
 }
@@ -299,7 +299,7 @@ main {
     overflow: hidden;
     position: relative;
     margin: 0 auto;
-    margin-top: 4rem;
+    margin-top: 0rem;
 }
 
 .showCard h3 {
@@ -441,12 +441,13 @@ main {
 /* Projects Grid Styling */
 #projectsGrid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
     margin-top: 2rem;
-    max-width: 600px;
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
+    width: 100%;
 }
 
 .project {
@@ -546,31 +547,38 @@ main {
 }
 
 #shop-content {
-    max-width: 800px;
-    text-align: center;
+    max-width: 1200px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 4rem;
     color: black;
     padding: 1rem;
     position: relative;
     overflow: hidden;
 }
 
-#shop-content p {
-    font-size: 1rem;
+#shop-title {
+    flex: 0 0 300px;
+    text-align: left;
+}
+
+#shop-title p {
+    font-size: 1.2rem;
     line-height: 1.8;
     font-weight: 300;
     letter-spacing: 0.5px;
     text-transform: none;
     color: black;
+    margin: 0;
 }
 
 #shop-products {
+    flex: 1;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
-    margin-top: 2rem;
     max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .shop-product {
@@ -837,6 +845,139 @@ main {
     .carousel-track {
         animation-duration: 25s;
     }
+}
+
+/* Video Title Banner Scrolling Effect */
+#video-title-banner {
+  width: 100%;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  padding: 1rem 0;
+  white-space: nowrap;
+}
+
+#video-title-scroll {
+  display: inline-block;
+  animation: scroll-left 20s linear infinite;
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+}
+
+#video-title-scroll span {
+  display: inline-block;
+  padding-right: 2rem;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Video Section Styling */
+#video-content {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#aex-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Project Right Column Styling */
+#project-right-column {
+  position: absolute;
+  top: 50%;
+  right: 2rem;
+  transform: translateY(-50%);
+  width: 200px;
+  max-height: 70vh;
+  overflow-y: auto;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.5s ease;
+}
+
+#project-right-column.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+#project-right-column .project {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 0.8rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin-bottom: 0.8rem;
+  transform: translateX(20px);
+  opacity: 0;
+  animation: slideInFromRight 0.5s ease forwards;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#project-right-column .project:nth-child(1) { animation-delay: 0.1s; }
+#project-right-column .project:nth-child(2) { animation-delay: 0.2s; }
+#project-right-column .project:nth-child(3) { animation-delay: 0.3s; }
+
+#project-right-column .project-image {
+  width: 100%;
+  height: 80px;
+  overflow: hidden;
+  border-radius: 6px;
+  margin-bottom: 0.6rem;
+}
+
+#project-right-column .project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+#project-right-column .project-caption {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-align: center;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#project-right-column .project:hover {
+  transform: translateX(-5px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 1);
+}
+
+/* Project animations */
+@keyframes slideInFromRight {
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 480px) {

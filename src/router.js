@@ -19,6 +19,7 @@ const routes = {
                         <button data-section="carousel">Gallery</button>
                         <button data-section="shows">Shows</button>
                         <button data-section="projects">Projects</button>
+                        <button data-section="video">Video</button>
                         <button data-section="shop">Shop</button>
                         <button data-section="contact">Contact</button>
                     </div>
@@ -88,28 +89,14 @@ const routes = {
                 </div>
                 <div id="shows" class="light-section">
                     <h2 id="shows-title">Upcoming Shows</h2>
-                    <div class="showCard">
-                        <h3>New York Fashion Week</h3>
-                        <p>Fall/Winter 2026</p>
-                        <p>Show Date: 09.12.2025</p>
-                        <p>Show Time: TBD</p>
-                        <p>Show Location: New York, NY</p>
-                        <div id="shows-content">
-                            <img id="shows-image" src="${secondImagePath}" alt="Shows Image">
-                        </div>
-                        <div class="showsCta">
-                            <p>Reserve a ticket</p>
-                            <input type="email" placeholder="Enter your email" class="ticket-input">
-                            <button type="submit" class="submit-btn">Submit</button>
-                        </div>
-                    </div>
+                    <!-- Dynamic show cards will be inserted here by updateShowsSection() -->
                 </div>
                 <div id="projects" class="dark-section">
                     <div id="projects-content">
                         <p>Creative endeavors and innovative solutions.</p>
                         <div id="project-container"></div>
                         <div id="projectsGrid">
-                            <div class="project">
+                            <div class="project" id="moving-project-card">
                                 <div class="project-image">
                                     <img src="${getRandomImage()}" alt="EPPERSON Project">
                                 </div>
@@ -133,30 +120,53 @@ const routes = {
                                 </div>
                                 <div class="project-caption">CÉLINE</div>
                             </div>
+                            <div class="project">
+                                <div class="project-image">
+                                    <img src="${getRandomImage()}" alt="Project Alpha">
+                                </div>
+                                <div class="project-caption">Project Alpha</div>
+                            </div>
+                            <div class="project">
+                                <div class="project-image">
+                                    <img src="${getRandomImage()}" alt="Project Beta">
+                                </div>
+                                <div class="project-caption">Project Beta</div>
+                            </div>
                         </div>
                     </div>
                     <div id="projects-image">
                         <img src="${thirdImagePath}" alt="Projects Image">
                     </div>
+                    <div id="project-right-column">
+                        <!-- Non-selected project cards will be moved here -->
+                    </div>
+                </div>
+                <div id="video" class="dark-section">
+                    <div id="video-title-banner">
+                        <div id="video-title-scroll">
+                            <span>Experience AEX • Experience AEX • Experience AEX • Experience AEX • Experience AEX • </span>
+                        </div>
+                    </div>
+                    <div id="video-content">
+                        <video id="aex-video" controls autoplay muted loop preload="metadata" poster="">
+                            <source src="" type="video/mp4">
+                            <source src="" type="video/quicktime">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div id="video-title-banner">
+                        <div id="video-title-scroll">
+                            <span>Experience AEX • Experience AEX • Experience AEX • Experience AEX • Experience AEX • </span>
+                        </div>
+                    </div>
                 </div>
                 <div id="shop">
                     <div id="shop-content">
-                        <p>Shop our latest products</p>
-                    </div>
-                    <div id="shop-products">
-                        <div class="shop-product">
-                            <img src="${getRandomImage()}" alt="Shop Product">
-                            <p>Product Name</p>
-                            <p>Product Description</p>
-                            <p>Product Price</p>
-                            <button class="shop-btn">Shop Now</button>
+                        <div id="shop-title">
+                            <p>Shop our latest products</p>
                         </div>
-                        <div class="shop-product">
-                            <img src="${getRandomImage()}" alt="Shop Product">
-                            <p>Product Name</p>
-                            <p>Product Description</p>
-                            <p>Product Price</p>
-                            <button class="shop-btn">Shop Now</button>
+                        <div id="shop-products">
+                            <!-- Dynamic product cards will be inserted here by updateShopSection() -->
                         </div>
                     </div>
                 </div>
