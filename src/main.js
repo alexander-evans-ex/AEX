@@ -898,7 +898,7 @@ function createShowCard(show) {
     if (imageUrls.length > 0) {
       // Check if the URL is a full URL or just a filename
       const firstUrl = imageUrls[0];
-      if (firstUrl.startsWith('http') || firstUrl.startsWith('/')) {
+      if (firstUrl.startsWith('http') || firstUrl.startsWith('https') || firstUrl.startsWith('/')) {
         // It's a full URL, use random selection
         const timestamp = Date.now();
         const randomSeed = (timestamp + Math.random() * 1000) % 1;
@@ -1120,7 +1120,7 @@ function createProjectCard(project) {
     console.log('Starts with /:', imageUrl.startsWith('/'));
     
     // Check if it's a full URL or just a filename
-    if (imageUrl.startsWith('http') || imageUrl.startsWith('/')) {
+    if (imageUrl.startsWith('http') || imageUrl.startsWith('https') || imageUrl.startsWith('/')) {
       projectImage = imageUrl;
       console.log('✅ Using project image URL:', projectImage);
     } else {
@@ -1871,7 +1871,7 @@ function createProductCard(product) {
   if (product.imageUrl && product.imageUrl.trim()) {
     const imageUrl = product.imageUrl.trim();
     // Check if the URL is a full URL or just a filename
-    if (imageUrl.startsWith('http') || imageUrl.startsWith('/')) {
+    if (imageUrl.startsWith('http') || imageUrl.startsWith('https') || imageUrl.startsWith('/')) {
       productImage = imageUrl;
       console.log('Using full product image URL:', productImage);
     } else {
