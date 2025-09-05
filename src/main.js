@@ -463,8 +463,13 @@ function isDevelopmentMode() {
          window.location.port === '5173';
 }
 
-// CORS proxy service to handle cross-origin requests
-const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+// CORS proxy services to handle cross-origin requests (with fallbacks)
+const CORS_PROXIES = [
+  'https://api.allorigins.win/raw?url=',
+  'https://cors-anywhere.herokuapp.com/',
+  'https://corsproxy.io/?'
+];
+let currentProxyIndex = 0;
 
 // Test function to check if Google Apps Script is accessible
 async function testGoogleScript() {
@@ -517,7 +522,7 @@ async function fetchGlobalData() {
     console.log('Original URL:', GAS_GET_URL);
 
     // Use CORS proxy to handle cross-origin requests
-    const proxyUrl = CORS_PROXY + encodeURIComponent(GAS_GET_URL);
+    const proxyUrl = CORS_PROXIES[currentProxyIndex] + encodeURIComponent(GAS_GET_URL);
     console.log('Using CORS proxy:', proxyUrl);
     
     const response = await fetch(proxyUrl, {
@@ -571,7 +576,17 @@ async function fetchGlobalData() {
     console.log('3. Test the script URL directly in browser');
     console.log('4. Check if the CORS proxy service is working');
     console.log('5. Verify the script URL is correct and accessible');
-    throw error;
+    
+    // Try next CORS proxy
+    currentProxyIndex = (currentProxyIndex + 1) % CORS_PROXIES.length;
+    
+    if (currentProxyIndex === 0) {
+      console.log('All CORS proxies failed, falling back to local data...');
+      return useFallbackData();
+    } else {
+      console.log('Retrying with next proxy...');
+      return fetchGlobalData();
+    }
   }
 }
 
