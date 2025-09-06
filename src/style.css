@@ -123,6 +123,11 @@ main {
 
 #intro-title {
     margin-bottom: 2rem;
+    text-align: center;
+    word-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+    padding: 0 2rem;
 }
 
 #intro-content h1 {
@@ -194,6 +199,539 @@ main {
 
 #menu-items button:hover {
     transform: translateY(-2px);
+}
+
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    bottom: 2%;
+    right: 2%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 1rem;
+    z-index: 1000;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 4rem;
+    height: 4rem;
+    transform: translateZ(0); /* Force hardware acceleration */
+}
+
+.mobile-menu-toggle {
+    --hamburger-color: white;
+}
+
+.mobile-menu-toggle span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: var(--hamburger-color);
+    border-radius: 2px;
+    transition: background-color 0.3s ease;
+}
+
+.mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+}
+
+/* Ensure active state maintains color contrast */
+.mobile-menu-toggle.dark-contrast.active span,
+.mobile-menu-toggle.dark-contrast.active span:nth-child(1),
+.mobile-menu-toggle.dark-contrast.active span:nth-child(2),
+.mobile-menu-toggle.dark-contrast.active span:nth-child(3) {
+    background-color: #000 !important;
+}
+
+/* Force dark contrast for all states */
+.mobile-menu-toggle.dark-contrast span {
+    background-color: #000 !important;
+}
+
+/* Mobile Menu Dropdown */
+.mobile-menu-dropdown {
+    display: none;
+    position: fixed;
+    bottom: calc(2% + 5rem);
+    right: 2%;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 8px;
+    padding: 1rem;
+    min-width: 200px;
+    z-index: 999;
+    flex-direction: column;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-menu-dropdown.active {
+    display: flex;
+}
+
+.mobile-menu-dropdown button {
+    color: white;
+    background: none;
+    border: none;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.8rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+.mobile-menu-dropdown button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(4px);
+}
+
+/* Dark contrast styles for mobile menu (used in light sections) */
+.mobile-menu-toggle.dark-contrast {
+    --hamburger-color: #000;
+}
+
+.mobile-menu-toggle.dark-contrast span,
+.mobile-menu-toggle.dark-contrast span:nth-child(1),
+.mobile-menu-toggle.dark-contrast span:nth-child(2),
+.mobile-menu-toggle.dark-contrast span:nth-child(3) {
+    background-color: var(--hamburger-color) !important;
+    transition: background-color 0.3s ease;
+}
+
+.mobile-menu-dropdown.dark-contrast {
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.mobile-menu-dropdown.dark-contrast button {
+    color: #fff;
+    transition: color 0.3s ease;
+}
+
+.mobile-menu-dropdown.dark-contrast button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    /* Hide desktop menu on mobile */
+    #menu-items {
+        display: none;
+    }
+    
+    /* Show mobile menu toggle */
+    .mobile-menu-toggle {
+        display: flex !important;
+    }
+    
+    /* Adjust intro title for mobile */
+    #intro-title {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+        padding: 0 3rem;
+        line-height: 1.4;
+    }
+    
+    /* Adjust intro content positioning */
+    #intro-content {
+        padding: 2rem 1rem;
+        text-align: center;
+    }
+    
+    /* Make intro content responsive */
+    #intro-content h1 {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Adjust mobile menu positioning */
+    .mobile-menu-toggle {
+        bottom: 2%;
+        right: 2%;
+        width: 4rem;
+        height: 4rem;
+    }
+    
+    .mobile-menu-dropdown {
+        right: 2%;
+        bottom: calc(2% + 5rem);
+    }
+    
+    /* Projects section mobile - simplified design */
+    #projects {
+        padding: 0 !important;
+        height: 100vh !important;
+        min-height: 100vh !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    #projects-content {
+        height: 100% !important;
+        position: relative !important;
+        text-align: center !important;
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        margin-top: 0 !important;
+    }
+    
+    #projects-content p {
+        font-size: 1rem !important;
+        margin-bottom: 2rem !important;
+        color: white !important;
+    }
+    
+    /* Projects grid mobile - horizontal scroll */
+    #projectsGrid {
+        display: flex !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory !important;
+        gap: 1rem !important;
+        padding: 0 1rem !important;
+        justify-content: flex-start !important;
+        align-items: stretch !important;
+        margin: 0 !important;
+        max-width: none !important;
+        height: auto !important;
+        scrollbar-width: none !important;
+        -ms-overflow-style: none !important;
+    }
+    
+    #projectsGrid::-webkit-scrollbar {
+        display: none !important;
+    }
+    
+    .project {
+        width: 320px !important;
+        max-width: 320px !important;
+        flex-shrink: 0 !important;
+        scroll-snap-align: center !important;
+        background-color: white !important;
+        border: 1px solid #e0e0e0 !important;
+        border-radius: 8px !important;
+        padding: 1.2rem !important;
+        text-align: center !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .project:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .project-image {
+        width: 100% !important;
+        height: 220px !important;
+        overflow: hidden !important;
+        border-radius: 6px !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .project-image img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+    }
+    
+    .project-caption {
+        font-size: 0.9rem !important;
+        font-weight: 600 !important;
+        color: #333 !important;
+        margin: 0 !important;
+    }
+    
+    /* Hide right column on mobile */
+    #project-right-column {
+        display: none !important;
+    }
+    
+    /* Project detail modal mobile */
+    #project-detail-display {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        background: rgba(0, 0, 0, 0.95) !important;
+        z-index: 1000 !important;
+        overflow-y: auto !important;
+        padding: 2rem 1rem !important;
+        transform: none !important;
+    }
+    
+    #project-detail-display .project-media {
+        width: 100% !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    #project-detail-display video {
+        width: 100% !important;
+        height: 250px !important;
+        object-fit: cover !important;
+        border-radius: 8px !important;
+    }
+    
+    #project-detail-display #sound-toggle {
+        position: absolute !important;
+        top: 10px !important;
+        left: 10px !important;
+        right: auto !important;
+    }
+    
+    #project-detail-display .project-info {
+        color: white !important;
+        font-family: 'Courier New', monospace !important;
+    }
+    
+    #project-detail-display .project-info h2 {
+        font-size: 1.5rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    #project-detail-display .project-info p {
+        font-size: 1rem !important;
+        line-height: 1.6 !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Close button for mobile modal */
+    #project-detail-display .close-btn {
+        position: fixed !important;
+        top: 1rem !important;
+        right: 1rem !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+        color: white !important;
+        border: none !important;
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50% !important;
+        font-size: 1.2rem !important;
+        cursor: pointer !important;
+        z-index: 1001 !important;
+    }
+    
+    /* Project pagination dots mobile */
+    .project-pagination-dots {
+        position: absolute !important;
+        bottom: 2rem !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        display: flex !important;
+        gap: 0.5rem !important;
+        z-index: 10 !important;
+    }
+    
+    .project-dot {
+        width: 8px !important;
+        height: 8px !important;
+        border-radius: 50% !important;
+        background: rgba(255, 255, 255, 0.5) !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        border: 1px solid transparent !important;
+    }
+    
+    .project-dot.active {
+        background: white !important;
+        transform: scale(1.2) !important;
+        border-color: rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    .project-dot:hover {
+        background: rgba(255, 255, 255, 0.8) !important;
+        transform: scale(1.1) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small screens */
+
+    #intro-content {
+        width: 100%;
+    }
+
+    #intro-title {
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        padding: 0 0rem;
+    }
+    
+    #intro-content h1 {
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+    }
+    
+    .mobile-menu-toggle {
+        bottom: 5%;
+        right: 5%;
+        width: 3.5rem;
+        height: 3.5rem;
+        position: fixed;
+    }
+    
+    .mobile-menu-dropdown {
+        right: 2%;
+        bottom: calc(2% + 4.5rem);
+        min-width: 180px;
+    }
+    
+    /* Mobile shows section adjustments */
+    #shows-title {
+        top: 2rem !important;
+    }
+    
+    .show-cards-container {
+        justify-content: flex-start !important;
+        padding: 0 1rem !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory !important;
+        margin-top: 0rem !important;
+    }
+    
+    .show-cards-container .showCard {
+        scroll-snap-align: center !important;
+        flex-shrink: 0 !important;
+    }
+    
+    /* Pagination dots for mobile shows */
+    .pagination-dots {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 0.5rem;
+        z-index: 10;
+    }
+    
+    .pagination-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        border: none;
+        background: lightgrey;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .pagination-dot.active {
+        background: black;
+        transform: scale(1.2);
+    }
+    
+    /* Show buttons for mobile */
+    .show-buttons {
+        position: absolute;
+        top: 4rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0.5rem;
+        justify-content: center;
+        padding: 0 1rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        z-index: 10;
+    }
+    
+    .show-buttons::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .show-button {
+        background: rgba(0, 0, 0, 0.8);
+        border: 2px solid white;
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.7rem;
+        font-weight: 300;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        flex-shrink: 0;
+        min-width: fit-content;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .show-button:hover {
+        background: rgba(255, 255, 255, 0.9);
+        color: black;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+    
+    .show-button.active {
+        background: white;
+        color: black;
+        border-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+}
+
+/* Hide video controls */
+video::-webkit-media-controls {
+    display: none !important;
+}
+
+video::-webkit-media-controls-panel {
+    display: none !important;
+}
+
+video::-webkit-media-controls-play-button {
+    display: none !important;
+}
+
+video::-webkit-media-controls-timeline {
+    display: none !important;
+}
+
+video::-webkit-media-controls-current-time-display {
+    display: none !important;
+}
+
+video::-webkit-media-controls-time-remaining-display {
+    display: none !important;
+}
+
+video::-webkit-media-controls-mute-button {
+    display: none !important;
+}
+
+video::-webkit-media-controls-volume-slider {
+    display: none !important;
+}
+
+video::-webkit-media-controls-fullscreen-button {
+    display: none !important;
 }
 
 #about {
@@ -395,6 +933,29 @@ main {
 }
 
 .purchase-btn:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+}
+
+.reserve-btn {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 300;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    margin: 0 auto;
+    width: fit-content;
+}
+
+.reserve-btn:hover {
     background-color: #333;
     transform: translateY(-2px);
 }

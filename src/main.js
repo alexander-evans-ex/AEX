@@ -4,6 +4,7 @@ import { router } from './router.js'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { getRandomImage } from './imageManifest.js' // Import image manifest and getRandomImage function
+import { getStripeKey } from './config.js'
 
 // ----- GSAP Setup -----
 gsap.registerPlugin(ScrollTrigger);
@@ -13,9 +14,128 @@ gsap.config({
     force3D: true
 });
 
+// ----- Mobile Menu Setup -----
+function initializeMobileMenu() {
+    const mobileToggle = document.getElementById('mobile-menu-toggle');
+    const mobileDropdown = document.getElementById('mobile-menu-dropdown');
+    
+    if (mobileToggle && mobileDropdown && !mobileToggle.hasAttribute('data-initialized')) {
+        // Mark as initialized to prevent duplicate event listeners
+        mobileToggle.setAttribute('data-initialized', 'true');
+        // Function to update mobile menu contrast based on current section
+        function updateMobileMenuContrast() {
+            const currentSection = getCurrentSection();
+            const isLightSection = currentSection === 'carousel' || currentSection === 'contact' || currentSection === 'shows';
+            
+            console.log('Current section:', currentSection, 'Is light section:', isLightSection);
+            
+            if (isLightSection) {
+                // Light section - use dark contrast (black)
+                mobileToggle.classList.add('dark-contrast');
+                mobileDropdown.classList.add('dark-contrast');
+                console.log('Applied dark-contrast class to mobile menu');
+            } else {
+                // Dark section - use light contrast (white)
+                mobileToggle.classList.remove('dark-contrast');
+                mobileDropdown.classList.remove('dark-contrast');
+                console.log('Removed dark-contrast class from mobile menu');
+            }
+        }
+        
+        // Function to get current section based on scroll position
+        function getCurrentSection() {
+            const sections = ['intro', 'about', 'carousel', 'shows', 'projects', 'video', 'contact'];
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            
+            // Check which section is currently in view
+            for (let section of sections) {
+                const element = document.getElementById(section);
+                if (element) {
+                    const rect = element.getBoundingClientRect();
+                    const elementTop = rect.top;
+                    const elementBottom = rect.bottom;
+                    
+                    // Check if section is in view (at least 30% visible)
+                    const viewportCenter = windowHeight * 0.5;
+                    if (elementTop <= viewportCenter && elementBottom >= viewportCenter) {
+                        return section;
+                    }
+                }
+            }
+            
+            // Default to intro if no section is clearly in view
+            return 'intro';
+        }
+        
+        mobileToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            console.log('Mobile menu clicked!');
+            console.log('Before toggle - active class:', mobileToggle.classList.contains('active'));
+            mobileToggle.classList.toggle('active');
+            mobileDropdown.classList.toggle('active');
+            console.log('After toggle - active class:', mobileToggle.classList.contains('active'));
+            console.log('Dropdown display:', window.getComputedStyle(mobileDropdown).display);
+        });
+        
+        // Close mobile menu when clicking on a menu item and scroll to section
+        const mobileMenuButtons = mobileDropdown.querySelectorAll('button');
+        mobileMenuButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const sectionName = button.getAttribute('data-section');
+                
+                // Close mobile menu
+                mobileToggle.classList.remove('active');
+                mobileDropdown.classList.remove('active');
+                
+                // Scroll to section
+                if (sectionName) {
+                    const targetSection = document.getElementById(sectionName);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileToggle.contains(e.target) && !mobileDropdown.contains(e.target)) {
+                mobileToggle.classList.remove('active');
+                mobileDropdown.classList.remove('active');
+            }
+        });
+        
+        // Close mobile menu on window resize (if switching to desktop)
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                mobileToggle.classList.remove('active');
+                mobileDropdown.classList.remove('active');
+            }
+        });
+        
+        // Update contrast on scroll
+        window.addEventListener('scroll', updateMobileMenuContrast);
+        
+        // Initial contrast update
+        updateMobileMenuContrast();
+        
+        // Manual test - add click handler to toggle contrast for testing
+        mobileToggle.addEventListener('dblclick', () => {
+            console.log('Double-clicked mobile menu - toggling contrast for testing');
+            mobileToggle.classList.toggle('dark-contrast');
+            mobileDropdown.classList.toggle('dark-contrast');
+            console.log('Current classes:', mobileToggle.className);
+        });
+    }
+}
+
 // ----- Google Apps Script Endpoints -----
-const GAS_GET_URL  = 'https://script.google.com/macros/s/AKfycbx3fF2GqrCXsFMwX4m-GEww5N96eEb3RATLp13HHvWzs3JNNA5jTZWLHojqDmDCHho6qg/exec';
-const GAS_POST_URL = 'https://script.google.com/macros/s/AKfycbx3fF2GqrCXsFMwX4m-GEww5N96eEb3RATLp13HHvWzs3JNNA5jTZWLHojqDmDCHho6qg/exec';
+const GAS_GET_URL  = 'https://script.google.com/macros/s/AKfycbz6Ya-bFI_p1nxqLjXs9FdjtHBfho1BgZT2rQLItPXRCdOQV-8xoKca4GRVPmC9jnyAyw/exec';
+const GAS_POST_URL = 'https://script.google.com/macros/s/AKfycbz6Ya-bFI_p1nxqLjXs9FdjtHBfho1BgZT2rQLItPXRCdOQV-8xoKca4GRVPmC9jnyAyw/exec';
 
 // ----- Global App Data -----
 let globalData = null;
@@ -896,7 +1016,166 @@ function updateShowsSection() {
     showCardsContainer.appendChild(showCard);
   });
 
+  // Add pagination dots and show buttons for mobile (only if multiple shows)
+  if (!isSingleShow && activeShowsCount > 1) {
+    addPaginationDots(showCardsContainer, activeShowsCount);
+    addShowButtons(activeShows, showCardsContainer);
+  }
+
   console.log(`✅ Updated shows section with ${activeShowsCount} active shows${isSingleShow ? ' (single show - prominent display)' : ''}`);
+}
+
+// Function to add pagination dots for mobile shows
+function addPaginationDots(container, totalCards) {
+  // Remove existing pagination dots
+  const existingDots = container.parentElement.querySelector('.pagination-dots');
+  if (existingDots) {
+    existingDots.remove();
+  }
+
+  // Create pagination dots container
+  const paginationDots = document.createElement('div');
+  paginationDots.className = 'pagination-dots';
+
+  // Create dots for each card
+  for (let i = 0; i < totalCards; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'pagination-dot';
+    if (i === 0) dot.classList.add('active');
+    
+    dot.addEventListener('click', () => {
+      // Scroll to the corresponding card
+      const cards = container.querySelectorAll('.showCard');
+      if (cards[i]) {
+        cards[i].scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center'
+        });
+      }
+    });
+    
+    paginationDots.appendChild(dot);
+  }
+
+  // Add pagination dots to the shows section
+  const showsSection = document.getElementById('shows');
+  if (showsSection) {
+    showsSection.appendChild(paginationDots);
+  }
+
+  // Add scroll listener to update active dot
+  let scrollTimeout;
+  container.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      updateActiveDot(container, paginationDots);
+    }, 100);
+  });
+}
+
+// Function to update active pagination dot based on scroll position
+function updateActiveDot(container, paginationDots) {
+  const cards = container.querySelectorAll('.showCard');
+  const dots = paginationDots.querySelectorAll('.pagination-dot');
+  
+  if (cards.length === 0 || dots.length === 0) return;
+
+  let activeIndex = 0;
+  const containerRect = container.getBoundingClientRect();
+  const containerCenter = containerRect.left + containerRect.width / 2;
+
+  cards.forEach((card, index) => {
+    const cardRect = card.getBoundingClientRect();
+    const cardCenter = cardRect.left + cardRect.width / 2;
+    
+    // Check if this card is closest to the center
+    if (Math.abs(cardCenter - containerCenter) < Math.abs(cards[activeIndex].getBoundingClientRect().left + cards[activeIndex].getBoundingClientRect().width / 2 - containerCenter)) {
+      activeIndex = index;
+    }
+  });
+
+  // Update active dot
+  dots.forEach((dot, index) => {
+    dot.classList.toggle('active', index === activeIndex);
+  });
+}
+
+// Function to add show buttons for mobile
+function addShowButtons(shows, container) {
+  // Remove existing show buttons
+  const existingButtons = container.parentElement.querySelector('.show-buttons');
+  if (existingButtons) {
+    existingButtons.remove();
+  }
+
+  // Create show buttons container
+  const showButtons = document.createElement('div');
+  showButtons.className = 'show-buttons';
+
+  // Create button for each show
+  shows.forEach((show, index) => {
+    const button = document.createElement('button');
+    button.className = 'show-button';
+    button.textContent = show.ticketType || `Event ${index + 1}`;
+    if (index === 0) button.classList.add('active');
+    
+    button.addEventListener('click', () => {
+      // Scroll to the corresponding card
+      const cards = container.querySelectorAll('.showCard');
+      if (cards[index]) {
+        cards[index].scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'center'
+        });
+      }
+    });
+    
+    showButtons.appendChild(button);
+  });
+
+  // Add show buttons after the title
+  const showsTitle = document.getElementById('shows-title');
+  if (showsTitle && showsTitle.parentElement) {
+    showsTitle.parentElement.insertBefore(showButtons, showsTitle.nextSibling);
+  }
+
+  // Add scroll listener to update active button
+  let scrollTimeout;
+  container.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      updateActiveButton(container, showButtons);
+    }, 100);
+  });
+}
+
+// Function to update active show button based on scroll position
+function updateActiveButton(container, showButtons) {
+  const cards = container.querySelectorAll('.showCard');
+  const buttons = showButtons.querySelectorAll('.show-button');
+  
+  if (cards.length === 0 || buttons.length === 0) return;
+
+  let activeIndex = 0;
+  const containerRect = container.getBoundingClientRect();
+  const containerCenter = containerRect.left + containerRect.width / 2;
+
+  cards.forEach((card, index) => {
+    const cardRect = card.getBoundingClientRect();
+    const cardCenter = cardRect.left + cardRect.width / 2;
+    
+    // Check if this card is closest to the center
+    if (Math.abs(cardCenter - containerCenter) < Math.abs(cards[activeIndex].getBoundingClientRect().left + cards[activeIndex].getBoundingClientRect().width / 2 - containerCenter)) {
+      activeIndex = index;
+    }
+  });
+
+  // Update active button
+  buttons.forEach((button, index) => {
+    button.classList.toggle('active', index === activeIndex);
+  });
 }
 
 function createShowCard(show, isSingleShow = false) {
@@ -1032,10 +1311,8 @@ function createShowCard(show, isSingleShow = false) {
     </div>
     <div class="showsCta">
       ${canPurchase ? 
-        `<p><b>${show.ticketType}</b> Experience</p><br><button type="button" class="purchase-btn">Purchase Ticket</button>` :
-        `<p>Reserve <b>${show.ticketType}</b> ticket</p>
-         <input type="email" placeholder="Enter your email" class="ticket-input">
-         <button type="submit" class="submit-btn">Submit</button>`
+        `<p><b>${show.ticketType}</b> Ticket</p><br><button type="button" class="purchase-btn">Purchase Ticket</button>` :
+        `<p><b>${show.ticketType}</b> Ticket</p><br><button type="button" class="reserve-btn">Reserve Ticket</button>`
       }
     </div>
   `;
@@ -1050,13 +1327,11 @@ function createShowCard(show, isSingleShow = false) {
       });
     }
   } else {
-    const submitBtn = showCard.querySelector('.submit-btn');
-    const ticketInput = showCard.querySelector('.ticket-input');
-    
-    if (submitBtn && ticketInput) {
-      submitBtn.addEventListener('click', (e) => {
+    const reserveBtn = showCard.querySelector('.reserve-btn');
+    if (reserveBtn) {
+      reserveBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        handleTicketSubmissionForShow(e, show.showId);
+        openReservationModal(show);
       });
     }
   }
@@ -1240,7 +1515,7 @@ function openPaymentModal(show) {
       
       <div class="form-group">
         <label for="instagram" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Instagram Handle *</label>
-        <input type="text" id="instagram" name="instagram" placeholder="@username" required style="
+        <input type="text" id="instagram" name="instagram" placeholder="username or @username" required style="
           width: 100%;
           padding: 0.75rem;
           border: 2px solid #e1e5e9;
@@ -1249,6 +1524,26 @@ function openPaymentModal(show) {
           transition: border-color 0.3s ease;
           box-sizing: border-box;
         ">
+      </div>
+      
+      <!-- Stripe Payment Element -->
+      <div class="form-group">
+        <label style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Payment Information *</label>
+        <div id="card-element" style="
+          padding: 0.75rem;
+          border: 2px solid #e1e5e9;
+          border-radius: 6px;
+          background: white;
+          transition: border-color 0.3s ease;
+        ">
+          <!-- Stripe Elements will create form elements here -->
+        </div>
+        <div id="card-errors" style="
+          color: #dc3545;
+          font-size: 0.875rem;
+          margin-top: 0.5rem;
+          display: none;
+        "></div>
       </div>
       
       <div class="form-actions" style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: flex-end;">
@@ -1282,6 +1577,38 @@ function openPaymentModal(show) {
 
   modalOverlay.appendChild(modalContent);
   document.body.appendChild(modalOverlay);
+
+  // Initialize Stripe Elements for card collection only
+  const stripe = Stripe(getStripeKey());
+  const elements = stripe.elements();
+
+  // Create card element (simpler than payment element for client-side only)
+  const cardElement = elements.create('card', {
+    style: {
+      base: {
+        fontSize: '16px',
+        color: '#424770',
+        '::placeholder': {
+          color: '#aab7c4',
+        },
+      },
+    },
+  });
+
+  // Mount the card element
+  cardElement.mount('#card-element');
+
+  // Handle real-time validation errors from the card element
+  cardElement.on('change', ({error}) => {
+    const displayError = document.getElementById('card-errors');
+    if (error) {
+      displayError.textContent = error.message;
+      displayError.style.display = 'block';
+    } else {
+      displayError.textContent = '';
+      displayError.style.display = 'none';
+    }
+  });
 
   // Add event listeners
   const closeBtn = modalContent.querySelector('.close-modal');
@@ -1330,9 +1657,9 @@ function openPaymentModal(show) {
   });
 
   // Handle form submission
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    handlePaymentSubmission(show, form);
+    await handleStripePayment(show, form, stripe, cardElement);
   });
 }
 
@@ -1354,19 +1681,29 @@ function handlePaymentSubmission(show, form) {
     return;
   }
 
-  // Validate Instagram handle format
-  const instagramHandle = instagram.startsWith('@') ? instagram : `@${instagram}`;
-  if (!/^@[a-zA-Z0-9._]+$/.test(instagramHandle)) {
-    alert('Please enter a valid Instagram handle (e.g., @username)');
+  // Validate and format Instagram handle
+  let instagramHandle = instagram.trim();
+  
+  // Remove @ symbol if present
+  if (instagramHandle.startsWith('@')) {
+    instagramHandle = instagramHandle.substring(1);
+  }
+  
+  // Validate Instagram handle format (without @)
+  if (!/^[a-zA-Z0-9._]+$/.test(instagramHandle)) {
+    alert('Please enter a valid Instagram handle (e.g., username or @username)');
     return;
   }
+  
+  // Format as Instagram URL
+  const instagramUrl = `https://www.instagram.com/${instagramHandle}`;
 
   // Prepare payment data
   const paymentData = {
     firstName,
     lastName,
     email,
-    instagram: instagramHandle,
+    instagram: instagramUrl,
     showId: show.showId,
     showProductId: show.showProductId,
     showName: show.showName,
@@ -1398,24 +1735,676 @@ function handlePaymentSubmission(show, form) {
     })
     .then(() => {
       console.log('Payment data sent to Google Script for show:', show.showId);
-      alert('Payment processed successfully! You will receive a confirmation email shortly.');
       
-      // Close modal
+      // Close payment modal
       const modalOverlay = document.querySelector('.payment-modal-overlay');
       if (modalOverlay) {
         document.body.removeChild(modalOverlay);
       }
+      
+      // Show success confirmation modal
+      showConfirmationModal('Payment processed successfully! You will receive a confirmation email shortly.', 'success');
     })
     .catch((error) => {
       console.error('Error processing payment:', error);
-      alert('There was an error processing your payment. Please try again.');
       
       // Reset button
       purchaseBtn.textContent = originalText;
       purchaseBtn.disabled = false;
       purchaseBtn.style.backgroundColor = 'black';
+      
+      // Show error confirmation modal
+      showConfirmationModal('There was an error processing your payment. Please try again.', 'error');
     });
   }, 2000); // 2 second delay to simulate processing
+}
+
+// ------------------------------
+// Stripe Payment Processing
+// ------------------------------
+async function handleStripePayment(show, form, stripe, cardElement) {
+  const formData = new FormData(form);
+  const firstName = formData.get('firstName').trim();
+  const lastName = formData.get('lastName').trim();
+  const email = formData.get('email').trim();
+  const instagram = formData.get('instagram').trim();
+
+  // Validation
+  if (!firstName || !lastName || !email || !instagram) {
+    showConfirmationModal('Please fill in all required fields', 'error');
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    showConfirmationModal('Please enter a valid email address', 'error');
+    return;
+  }
+
+  // Validate and format Instagram handle
+  let instagramHandle = instagram.trim();
+  if (instagramHandle.startsWith('@')) {
+    instagramHandle = instagramHandle.substring(1);
+  }
+  if (!/^[a-zA-Z0-9._]+$/.test(instagramHandle)) {
+    showConfirmationModal('Please enter a valid Instagram handle (e.g., username or @username)', 'error');
+    return;
+  }
+  const instagramUrl = `https://www.instagram.com/${instagramHandle}`;
+
+  // Get submit button and disable it
+  const submitBtn = form.querySelector('.purchase-btn');
+  const originalText = submitBtn.textContent;
+  
+  submitBtn.textContent = 'Processing...';
+  submitBtn.disabled = true;
+  submitBtn.style.backgroundColor = '#666';
+
+  try {
+    // Create payment method first
+    const { error: pmError, paymentMethod } = await stripe.createPaymentMethod({
+      type: 'card',
+      card: cardElement,
+      billing_details: {
+        name: `${firstName} ${lastName}`,
+        email: email,
+      },
+    });
+
+    if (pmError) {
+      showConfirmationModal(pmError.message, 'error');
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+      submitBtn.style.backgroundColor = 'black';
+      return;
+    }
+
+    console.log('Payment method created:', paymentMethod);
+    
+    // Create payment intent using API endpoint
+    const amount = parseFloat(show.ticketCost || '25.00');
+    const apiUrl = window.location.hostname === 'localhost' 
+      ? 'http://localhost:3001/api/create-payment-intent'
+      : '/api/create-payment-intent';
+    
+    const paymentIntentResponse = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        amount: amount,
+        paymentMethodId: paymentMethod.id,
+        email: email,
+        metadata: {
+          showId: show.showId,
+          showName: show.showName,
+          firstName: firstName,
+          lastName: lastName,
+          instagram: instagramUrl,
+          ticketType: show.ticketType
+        }
+      })
+    });
+
+    if (!paymentIntentResponse.ok) {
+      const errorData = await paymentIntentResponse.json();
+      throw new Error(errorData.message || 'Failed to create payment intent');
+    }
+
+    const { paymentIntent } = await paymentIntentResponse.json();
+    
+    if (paymentIntent.status === 'succeeded') {
+      // Payment succeeded immediately
+      console.log('Payment succeeded:', paymentIntent);
+      
+      // Close payment modal
+      const modalOverlay = document.querySelector('.payment-modal-overlay');
+      if (modalOverlay) {
+        document.body.removeChild(modalOverlay);
+      }
+      
+      // Send data to Google Apps Script
+      const paymentData = {
+        firstName,
+        lastName,
+        email,
+        instagram: instagramUrl,
+        showId: show.showId,
+        showProductId: show.showProductId,
+        showName: show.showName,
+        timestamp: new Date().toISOString(),
+        source: 'AEX Website',
+        tab: 'AEXMain',
+        ticketType: 'purchase',
+        paymentId: paymentIntent.id
+      };
+
+      fetch(GAS_POST_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(paymentData)
+      })
+      .then(() => {
+        console.log('Payment data sent to Google Script for show:', show.showId);
+        showConfirmationModal('Payment processed successfully! You will receive a confirmation email shortly.', 'success');
+      })
+      .catch((error) => {
+        console.error('Error sending payment data to Google Script:', error);
+        showConfirmationModal('Payment succeeded but there was an error saving your information. Please contact support.', 'error');
+      });
+      
+    } else if (paymentIntent.status === 'requires_action') {
+      // Handle 3D Secure authentication
+      const { error: confirmError } = await stripe.confirmCardPayment(paymentIntent.client_secret);
+      
+      if (confirmError) {
+        showConfirmationModal(confirmError.message, 'error');
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        submitBtn.style.backgroundColor = 'black';
+      } else {
+        // Payment succeeded after 3D Secure
+        console.log('Payment succeeded after 3D Secure:', paymentIntent);
+        
+        // Close payment modal
+        const modalOverlay = document.querySelector('.payment-modal-overlay');
+        if (modalOverlay) {
+          document.body.removeChild(modalOverlay);
+        }
+        
+        // Send data to Google Apps Script
+        const paymentData = {
+          firstName,
+          lastName,
+          email,
+          instagram: instagramUrl,
+          showId: show.showId,
+          showProductId: show.showProductId,
+          showName: show.showName,
+          timestamp: new Date().toISOString(),
+          source: 'AEX Website',
+          tab: 'AEXMain',
+          ticketType: 'purchase',
+          paymentId: paymentIntent.id
+        };
+
+        fetch(GAS_POST_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(paymentData)
+        })
+        .then(() => {
+          console.log('Payment data sent to Google Script for show:', show.showId);
+          showConfirmationModal('Payment processed successfully! You will receive a confirmation email shortly.', 'success');
+        })
+        .catch((error) => {
+          console.error('Error sending payment data to Google Script:', error);
+          showConfirmationModal('Payment succeeded but there was an error saving your information. Please contact support.', 'error');
+        });
+      }
+    } else {
+      // Payment failed or requires additional action
+      showConfirmationModal('Payment could not be processed. Please try again.', 'error');
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+      submitBtn.style.backgroundColor = 'black';
+    }
+    
+  } catch (error) {
+    console.error('Error processing payment:', error);
+    showConfirmationModal('There was an error processing your payment. Please try again.', 'error');
+    
+    // Reset button
+    submitBtn.textContent = originalText;
+    submitBtn.disabled = false;
+    submitBtn.style.backgroundColor = 'black';
+  }
+}
+
+// ------------------------------
+// Reservation Modal Functions
+// ------------------------------
+function openReservationModal(show) {
+  console.log('Opening reservation modal for show:', show);
+  
+  // Format the date and time for the modal
+  let modalFormattedDate = show.showDate;
+  if (show.showDate && show.showDate !== 'TBD') {
+    try {
+      const date = new Date(show.showDate);
+      if (!isNaN(date.getTime())) {
+        modalFormattedDate = date.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      }
+    } catch (e) {
+      console.log('Date formatting error:', e);
+    }
+  }
+  
+  let modalFormattedTime = show.showTime;
+  if (show.showTime && show.showTime !== 'TBD') {
+    try {
+      const time = new Date(show.showTime);
+      if (!isNaN(time.getTime())) {
+        modalFormattedTime = time.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        }).toLowerCase();
+      }
+    } catch (e) {
+      console.log('Time formatting error:', e);
+    }
+  }
+  
+  // Create modal overlay
+  const modalOverlay = document.createElement('div');
+  modalOverlay.className = 'reservation-modal-overlay';
+  modalOverlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+  `;
+
+  // Create modal content
+  const modalContent = document.createElement('div');
+  modalContent.className = 'reservation-modal-content';
+  modalContent.style.cssText = `
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+  `;
+
+  modalContent.innerHTML = `
+    <div class="modal-header" style="margin-bottom: 1.5rem;">
+      <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Reserve ${show.ticketType} Ticket</h2>
+      <button class="close-modal" style="
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #666;
+        padding: 0.5rem;
+        line-height: 1;
+      ">&times;</button>
+    </div>
+    
+    <div class="show-info" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+      <h3 style="margin: 0 0 0.5rem 0; color: #333;">${show.showName || 'Show Name'}</h3>
+      <p style="margin: 0.25rem 0; color: #666;">${modalFormattedDate || 'TBD'} at ${modalFormattedTime || 'TBD'}</p>
+      <p style="margin: 0.25rem 0; color: #666;">${show.showLocation || 'TBD'}</p>
+    </div>
+
+    <form class="reservation-form" style="display: flex; flex-direction: column; gap: 1rem;">
+      <div class="form-row" style="display: flex; gap: 1rem;">
+        <div class="form-group" style="flex: 1;">
+          <label for="firstName" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">First Name *</label>
+          <input type="text" id="firstName" name="firstName" required style="
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+          ">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="lastName" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Last Name *</label>
+          <input type="text" id="lastName" name="lastName" required style="
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+          ">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Email Address *</label>
+        <input type="email" id="email" name="email" required style="
+          width: 100%;
+          padding: 0.75rem;
+          border: 2px solid #e1e5e9;
+          border-radius: 6px;
+          font-size: 1rem;
+          transition: border-color 0.3s ease;
+          box-sizing: border-box;
+        ">
+      </div>
+      
+      <div class="form-group">
+        <label for="instagram" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Instagram Handle *</label>
+        <input type="text" id="instagram" name="instagram" placeholder="username or @username" required style="
+          width: 100%;
+          padding: 0.75rem;
+          border: 2px solid #e1e5e9;
+          border-radius: 6px;
+          font-size: 1rem;
+          transition: border-color 0.3s ease;
+          box-sizing: border-box;
+        ">
+      </div>
+      
+      <div class="form-actions" style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: flex-end;">
+        <button type="button" class="cancel-btn" style="
+          padding: 0.75rem 1.5rem;
+          border: 2px solid #e1e5e9;
+          background: white;
+          color: #666;
+          border-radius: 6px;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        ">Cancel</button>
+        <button type="submit" class="reserve-btn" style="
+          padding: 0.6rem 1.5rem;
+          border: none;
+          background: black;
+          color: white;
+          border-radius: 6px;
+          font-size: 0.9rem;
+          font-family: 'Courier New', Courier, monospace;
+          font-weight: 300;
+          letter-spacing: 0.8px;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        ">Reserve Ticket</button>
+      </div>
+    </form>
+  `;
+
+  modalOverlay.appendChild(modalContent);
+  document.body.appendChild(modalOverlay);
+
+  // Add event listeners
+  const closeBtn = modalContent.querySelector('.close-modal');
+  const cancelBtn = modalContent.querySelector('.cancel-btn');
+  const reserveBtn = modalContent.querySelector('.reserve-btn');
+  const form = modalContent.querySelector('.reservation-form');
+
+  const closeModal = () => {
+    document.body.removeChild(modalOverlay);
+  };
+
+  closeBtn.addEventListener('click', closeModal);
+  cancelBtn.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) closeModal();
+  });
+
+  // Add input focus styles
+  const inputs = modalContent.querySelectorAll('input');
+  inputs.forEach(input => {
+    input.addEventListener('focus', () => {
+      input.style.borderColor = '#007bff';
+    });
+    input.addEventListener('blur', () => {
+      input.style.borderColor = '#e1e5e9';
+    });
+  });
+
+  // Add button hover effects
+  cancelBtn.addEventListener('mouseenter', () => {
+    cancelBtn.style.backgroundColor = '#f8f9fa';
+    cancelBtn.style.borderColor = '#d1d5db';
+  });
+  cancelBtn.addEventListener('mouseleave', () => {
+    cancelBtn.style.backgroundColor = 'white';
+    cancelBtn.style.borderColor = '#e1e5e9';
+  });
+
+  reserveBtn.addEventListener('mouseenter', () => {
+    reserveBtn.style.backgroundColor = '#333';
+    reserveBtn.style.transform = 'translateY(-2px)';
+  });
+  reserveBtn.addEventListener('mouseleave', () => {
+    reserveBtn.style.backgroundColor = 'black';
+    reserveBtn.style.transform = 'translateY(0)';
+  });
+
+  // Handle form submission
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    handleReservationSubmission(show, form);
+  });
+}
+
+function handleReservationSubmission(show, form) {
+  const formData = new FormData(form);
+  const firstName = formData.get('firstName').trim();
+  const lastName = formData.get('lastName').trim();
+  const email = formData.get('email').trim();
+  const instagram = formData.get('instagram').trim();
+
+  // Validation
+  if (!firstName || !lastName || !email || !instagram) {
+    alert('Please fill in all required fields');
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    alert('Please enter a valid email address');
+    return;
+  }
+
+  // Validate and format Instagram handle
+  let instagramHandle = instagram.trim();
+  
+  // Remove @ symbol if present
+  if (instagramHandle.startsWith('@')) {
+    instagramHandle = instagramHandle.substring(1);
+  }
+  
+  // Validate Instagram handle format (without @)
+  if (!/^[a-zA-Z0-9._]+$/.test(instagramHandle)) {
+    alert('Please enter a valid Instagram handle (e.g., username or @username)');
+    return;
+  }
+  
+  // Format as Instagram URL
+  const instagramUrl = `https://www.instagram.com/${instagramHandle}`;
+
+  // Prepare reservation data
+  const reservationData = {
+    firstName,
+    lastName,
+    email,
+    instagram: instagramUrl,
+    showId: show.showId,
+    showName: show.showName,
+    timestamp: new Date().toISOString(),
+    source: 'AEX Website',
+    tab: 'AEXMain',
+    ticketType: 'reservation'
+  };
+
+  console.log('Processing reservation for show:', reservationData);
+
+  // Send data to Google Apps Script
+  const reserveBtn = form.querySelector('.reserve-btn');
+  const originalText = reserveBtn.textContent;
+  
+  reserveBtn.textContent = 'Processing...';
+  reserveBtn.disabled = true;
+  reserveBtn.style.backgroundColor = '#666';
+
+  fetch(GAS_POST_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(reservationData)
+  })
+  .then(() => {
+    console.log('Reservation data sent to Google Script for show:', show.showId);
+    
+    // Close reservation modal
+    const modalOverlay = document.querySelector('.reservation-modal-overlay');
+    if (modalOverlay) {
+      document.body.removeChild(modalOverlay);
+    }
+    
+    // Show success confirmation modal
+    showConfirmationModal('Reservation submitted successfully! You will receive a confirmation email shortly.', 'success');
+  })
+  .catch((error) => {
+    console.error('Error processing reservation:', error);
+    
+    // Reset button
+    reserveBtn.textContent = originalText;
+    reserveBtn.disabled = false;
+    reserveBtn.style.backgroundColor = 'black';
+    
+    // Show error confirmation modal
+    showConfirmationModal('There was an error submitting your reservation. Please try again.', 'error');
+  });
+}
+
+// ------------------------------
+// Confirmation Modal Functions
+// ------------------------------
+function showConfirmationModal(message, type = 'success') {
+  console.log('Showing confirmation modal:', message, type);
+  
+  // Create modal overlay
+  const modalOverlay = document.createElement('div');
+  modalOverlay.className = 'confirmation-modal-overlay';
+  modalOverlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
+    backdrop-filter: blur(5px);
+  `;
+
+  // Create modal content
+  const modalContent = document.createElement('div');
+  modalContent.className = 'confirmation-modal-content';
+  modalContent.style.cssText = `
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+    text-align: center;
+  `;
+
+  // Determine icon and colors based on type
+  const isSuccess = type === 'success';
+  const icon = isSuccess ? '✓' : '✗';
+  const iconColor = isSuccess ? '#000000' : '#dc3545';
+  const buttonColor = isSuccess ? '#000000' : '#dc3545';
+
+  modalContent.innerHTML = `
+    <div class="confirmation-icon" style="
+      font-size: 3rem;
+      color: ${iconColor};
+      margin-bottom: 1rem;
+      font-weight: bold;
+    ">${icon}</div>
+    
+    <h2 style="
+      margin: 0 0 1rem 0;
+      color: #333;
+      font-size: 1.5rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 300;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    ">${isSuccess ? 'Success' : 'Error'}</h2>
+    
+    <p style="
+      margin: 0 0 2rem 0;
+      color: #666;
+      font-size: 1rem;
+      line-height: 1.5;
+    ">${message}</p>
+    
+    <button class="confirmation-ok-btn" style="
+      padding: 0.75rem 2rem;
+      border: none;
+      background: ${buttonColor};
+      color: white;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 300;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    ">OK</button>
+  `;
+
+  modalOverlay.appendChild(modalContent);
+  document.body.appendChild(modalOverlay);
+
+  // Add event listeners
+  const okBtn = modalContent.querySelector('.confirmation-ok-btn');
+  
+  const closeModal = () => {
+    document.body.removeChild(modalOverlay);
+  };
+
+  okBtn.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) closeModal();
+  });
+
+  // Add button hover effects
+  okBtn.addEventListener('mouseenter', () => {
+    const hoverColor = isSuccess ? '#333333' : '#c82333';
+    okBtn.style.backgroundColor = hoverColor;
+    okBtn.style.transform = 'translateY(-2px)';
+  });
+  
+  okBtn.addEventListener('mouseleave', () => {
+    okBtn.style.backgroundColor = buttonColor;
+    okBtn.style.transform = 'translateY(0)';
+  });
+
+  // Auto-close after 5 seconds for success messages
+  if (isSuccess) {
+    setTimeout(() => {
+      if (document.body.contains(modalOverlay)) {
+        closeModal();
+      }
+    }, 5000);
+  }
 }
 
 // ------------------------------
@@ -1551,6 +2540,82 @@ function setupProjectCardClickHandlers() {
     card.classList.remove('moving-to-column');
   }
   
+  // Add pagination dots for mobile
+  function addProjectPaginationDots() {
+    const isMobile = window.innerWidth <= 768;
+    if (!isMobile) return;
+    
+    const projectsContent = document.querySelector('#projects-content');
+    const projectsGrid = document.querySelector('#projectsGrid');
+    const projectCards = document.querySelectorAll('.project');
+    
+    if (!projectsContent || !projectsGrid || projectCards.length === 0) return;
+    
+    // Remove existing pagination dots
+    const existingDots = document.querySelector('.project-pagination-dots');
+    if (existingDots) {
+      existingDots.remove();
+    }
+    
+    // Create pagination dots container
+    const paginationDots = document.createElement('div');
+    paginationDots.className = 'project-pagination-dots';
+    
+    // Create dots for each project card
+    projectCards.forEach((_, index) => {
+      const dot = document.createElement('div');
+      dot.className = 'project-dot';
+      if (index === 0) dot.classList.add('active');
+      
+      // Add click handler to scroll to corresponding card
+      dot.addEventListener('click', () => {
+        const card = projectCards[index];
+        if (card) {
+          card.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'center'
+          });
+        }
+      });
+      
+      paginationDots.appendChild(dot);
+    });
+    
+    // Add pagination dots to projects content
+    projectsContent.appendChild(paginationDots);
+    
+    // Add scroll listener to update active dot
+    projectsGrid.addEventListener('scroll', () => {
+      updateActiveProjectDot(projectCards, paginationDots);
+    });
+  }
+  
+  function updateActiveProjectDot(cards, dotsContainer) {
+    const dots = dotsContainer.querySelectorAll('.project-dot');
+    const containerRect = document.querySelector('#projectsGrid').getBoundingClientRect();
+    const containerCenter = containerRect.left + containerRect.width / 2;
+    
+    let activeIndex = 0;
+    let minDistance = Infinity;
+    
+    cards.forEach((card, index) => {
+      const cardRect = card.getBoundingClientRect();
+      const cardCenter = cardRect.left + cardRect.width / 2;
+      const distance = Math.abs(cardCenter - containerCenter);
+      
+      if (distance < minDistance) {
+        minDistance = distance;
+        activeIndex = index;
+      }
+    });
+    
+    // Update active dot
+    dots.forEach((dot, index) => {
+      dot.classList.toggle('active', index === activeIndex);
+    });
+  }
+  
   function setupProjectCardClick(card) {
     card.addEventListener('click', () => {
       // Get the project data from the card's data attribute
@@ -1563,6 +2628,16 @@ function setupProjectCardClickHandlers() {
         return;
       }
       
+      // Check if we're on mobile
+      const isMobile = window.innerWidth <= 768;
+      
+      if (isMobile) {
+        // Mobile behavior: just show the project details modal
+        displayProjectDetails(project);
+        return;
+      }
+      
+      // Desktop behavior: move cards around
       // Display project details
       displayProjectDetails(project);
       
@@ -1661,6 +2736,9 @@ function setupProjectCardClickHandlers() {
   // Setup click handlers for all project cards
   const projectCards = document.querySelectorAll('.project');
   projectCards.forEach(setupProjectCardClick);
+  
+  // Add pagination dots for mobile
+  addProjectPaginationDots();
 }
 
 // Helper function to show project image when video fails
@@ -1692,21 +2770,43 @@ function displayProjectDetails(project) {
   // Create the project detail display
   const detailDisplay = document.createElement('div');
   detailDisplay.id = 'project-detail-display';
-  detailDisplay.style.cssText = `
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    max-width: 800px;
-    max-height: 80vh;
-    z-index: 100;
-    overflow-y: auto;
-    padding: 2rem;
-    font-family: 'Courier New', Courier, monospace;
-    background: transparent;
-    color: white;
-  `;
+  
+  // Check if we're on mobile
+  const isMobile = window.innerWidth <= 768;
+  
+  if (isMobile) {
+    // Mobile styling
+    detailDisplay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 2rem 1rem;
+      font-family: 'Courier New', Courier, monospace;
+      color: white;
+    `;
+  } else {
+    // Desktop styling
+    detailDisplay.style.cssText = `
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 800px;
+      max-height: 80vh;
+      z-index: 100;
+      overflow-y: auto;
+      padding: 2rem;
+      font-family: 'Courier New', Courier, monospace;
+      background: transparent;
+      color: white;
+    `;
+  }
   
   // Determine what media to show (video first, then image)
   let mediaContent = '';
@@ -1728,7 +2828,7 @@ function displayProjectDetails(project) {
     // Show video if available
     mediaContent = `
       <div class="project-media" style="width: 100%; margin-bottom: 1.5rem; position: relative;">
-        <video id="project-video" controls autoplay muted loop preload="metadata" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;" 
+        <video id="project-video" autoplay muted loop preload="metadata" playsinline style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px; user-select: none; pointer-events: none;" 
                onloadstart="console.log('Video loading:', this.src);"
                oncanplay="console.log('Video can play:', this.src);"
                onerror="console.log('Video error:', this.error, 'Code:', this.error?.code); this.style.display='none'; this.nextElementSibling.style.display='block'; showProjectImageFallback(project);"
@@ -1813,10 +2913,25 @@ function displayProjectDetails(project) {
   
   detailDisplay.innerHTML = `
     <div style="position: relative;">
+      <button class="close-btn" style="
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        cursor: pointer;
+        z-index: 1001;
+      ">×</button>
       
       ${mediaContent}
       
       <div class="project-info" style="color: white; line-height: 1.6;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 1rem; color: white; text-align: center;">${project.projectName || 'Project'}</h2>
         <p style="font-size: 1.1rem; margin-bottom: 1rem; text-align: left; color: #ccc; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); text-transform: none;">
           ${project.projectText || 'No description available'}
         </p>
@@ -1840,6 +2955,35 @@ function displayProjectDetails(project) {
     
     // Scroll window to projects section
     projectsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  
+  // Add close button functionality
+  const closeBtn = detailDisplay.querySelector('.close-btn');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      detailDisplay.remove();
+      
+      // Show the projects content text again
+      const projectsContent = document.querySelector('#projects-content p');
+      if (projectsContent) {
+        projectsContent.style.display = 'block';
+      }
+    });
+  }
+  
+  // Close modal when clicking outside (mobile only)
+  if (isMobile) {
+    detailDisplay.addEventListener('click', (e) => {
+      if (e.target === detailDisplay) {
+        detailDisplay.remove();
+        
+        // Show the projects content text again
+        const projectsContent = document.querySelector('#projects-content p');
+        if (projectsContent) {
+          projectsContent.style.display = 'block';
+        }
+      }
+    });
   }
   
   // Add sound toggle functionality
@@ -2340,6 +3484,12 @@ function handleProductClick(e, product) {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Application initialized');
     
+  // Initialize mobile menu immediately
+    initializeMobileMenu();
+    
+  // Also initialize after a short delay to ensure elements are ready
+    setTimeout(initializeMobileMenu, 100);
+    
   // GSAP global (if needed elsewhere)
     window.gsap = gsap;
     
@@ -2779,6 +3929,9 @@ document.addEventListener('DOMContentLoaded', () => {
     updateProjectsSection();
     console.log('About to call updateVideoSection...');
     updateVideoSection();
+    
+    // Re-initialize mobile menu after content updates
+    initializeMobileMenu();
     
     // Force video update after a short delay to ensure DOM is ready
     setTimeout(() => {

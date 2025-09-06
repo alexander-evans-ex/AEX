@@ -12,6 +12,21 @@ const routes = {
     '/': {
         template: `
             <div class="page home-page">
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-toggle" class="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <!-- Mobile Menu Dropdown -->
+                <div id="mobile-menu-dropdown" class="mobile-menu-dropdown">
+                    <button data-section="about">About</button>
+                    <button data-section="carousel">Gallery</button>
+                    <button data-section="shows">Shows</button>
+                    <button data-section="projects">Projects</button>
+                    <button data-section="video">Video</button>
+                    <button data-section="contact">Contact</button>
+                </div>
                 <div id="intro-content">
                     <h1 id="intro-title">Alexander Evans Experience<span class="blinking-cursor">_</span></h1>
                     <div id="menu-items">
@@ -204,7 +219,7 @@ const routes = {
                         </div>
                     </div>
                     <div id="video-content">
-                        <video id="aex-video" controls autoplay muted loop preload="metadata" poster="">
+                        <video id="aex-video" controls autoplay muted loop preload="metadata" playsinline poster="">
                             <source src="" type="video/mp4">
                             <source src="" type="video/quicktime">
                             Your browser does not support the video tag.
@@ -231,7 +246,7 @@ const routes = {
                         <div class="contact-info">
                             <div class="contact-item">
                                 <div class="contact-details">
-                                    <h3>Email:<span> hello@aex.com</span></h3>    
+                                    <h3>Email:<span> AlexanderEvansCo@gmail.com</span></h3>    
                                 </div>
                             </div>
                             <div class="contact-item">
