@@ -20,7 +20,6 @@ const routes = {
                         <button data-section="shows">Shows</button>
                         <button data-section="projects">Projects</button>
                         <button data-section="video">Video</button>
-                        <button data-section="shop">Shop</button>
                         <button data-section="contact">Contact</button>
                     </div>
                 </div>
@@ -217,7 +216,7 @@ const routes = {
                         </div>
                     </div>
                 </div>
-                <div id="shop">
+                <div id="shop" style="display: none;">
                     <div id="shop-content">
                         <div id="shop-title">
                             <p>Shop our latest products</p>

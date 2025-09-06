@@ -14,8 +14,8 @@ gsap.config({
 });
 
 // ----- Google Apps Script Endpoints -----
-const GAS_GET_URL  = 'https://script.google.com/macros/s/AKfycbwgPMgYfzmrm4LLNszQMYDkAp8ZBRLo-TmE0swW63Ylai5JPHuoP4l5oTvOhHgTln7NMg/exec';
-const GAS_POST_URL = 'https://script.google.com/macros/s/AKfycbwgPMgYfzmrm4LLNszQMYDkAp8ZBRLo-TmE0swW63Ylai5JPHuoP4l5oTvOhHgTln7NMg/exec';
+const GAS_GET_URL  = 'https://script.google.com/macros/s/AKfycbx3fF2GqrCXsFMwX4m-GEww5N96eEb3RATLp13HHvWzs3JNNA5jTZWLHojqDmDCHho6qg/exec';
+const GAS_POST_URL = 'https://script.google.com/macros/s/AKfycbx3fF2GqrCXsFMwX4m-GEww5N96eEb3RATLp13HHvWzs3JNNA5jTZWLHojqDmDCHho6qg/exec';
 
 // ----- Global App Data -----
 let globalData = null;
@@ -987,8 +987,8 @@ function createShowCard(show, isSingleShow = false) {
       const date = new Date(show.showDate);
       if (!isNaN(date.getTime())) {
         formattedDate = date.toLocaleDateString('en-US', {
-          month: '2-digit',
-          day: '2-digit',
+          month: 'long',
+          day: 'numeric',
           year: 'numeric'
         });
       }
@@ -1007,7 +1007,7 @@ function createShowCard(show, isSingleShow = false) {
           hour: 'numeric',
           minute: '2-digit',
           hour12: true
-        });
+        }).toLowerCase();
       }
     } catch (e) {
       console.log('Time formatting error:', e);
@@ -1018,9 +1018,11 @@ function createShowCard(show, isSingleShow = false) {
   const isTicketAvailable = show.ticketAvailable === true || show.ticketAvailable === 'true' || show.ticketAvailable === 1;
   const hasProductId = show.showProductId && show.showProductId.trim() !== '';
   const canPurchase = isTicketAvailable && hasProductId;
+  
+  console.log('Show ticket type:', show);
 
   showCard.innerHTML = `
-    <h3>${show.showName || 'Show Name'}</h3>
+    <h3><b>${show.showName || 'Show Name'}</b></h3>
     <p>${show.showDesc || 'Show description'}</p>
     <p>Show Date: ${formattedDate || 'TBD'}</p>
     <p>Show Time: ${formattedTime || 'TBD'}</p>
@@ -1030,8 +1032,8 @@ function createShowCard(show, isSingleShow = false) {
     </div>
     <div class="showsCta">
       ${canPurchase ? 
-        `<button type="button" class="purchase-btn">Purchase Ticket</button>` :
-        `<p>Reserve a ticket</p>
+        `<p><b>${show.ticketType}</b> Experience</p><br><button type="button" class="purchase-btn">Purchase Ticket</button>` :
+        `<p>Reserve <b>${show.ticketType}</b> ticket</p>
          <input type="email" placeholder="Enter your email" class="ticket-input">
          <button type="submit" class="submit-btn">Submit</button>`
       }
@@ -1106,6 +1108,39 @@ function handleTicketSubmissionForShow(e, showId) {
 function openPaymentModal(show) {
   console.log('Opening payment modal for show:', show);
   
+  // Format the date and time for the modal
+  let modalFormattedDate = show.showDate;
+  if (show.showDate && show.showDate !== 'TBD') {
+    try {
+      const date = new Date(show.showDate);
+      if (!isNaN(date.getTime())) {
+        modalFormattedDate = date.toLocaleDateString('en-US', {
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric'
+        });
+      }
+    } catch (e) {
+      console.log('Date formatting error:', e);
+    }
+  }
+  
+  let modalFormattedTime = show.showTime;
+  if (show.showTime && show.showTime !== 'TBD') {
+    try {
+      const time = new Date(show.showTime);
+      if (!isNaN(time.getTime())) {
+        modalFormattedTime = time.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        }).toLowerCase();
+      }
+    } catch (e) {
+      console.log('Time formatting error:', e);
+    }
+  }
+  
   // Create modal overlay
   const modalOverlay = document.createElement('div');
   modalOverlay.className = 'payment-modal-overlay';
@@ -1140,7 +1175,8 @@ function openPaymentModal(show) {
 
   modalContent.innerHTML = `
     <div class="modal-header" style="margin-bottom: 1.5rem;">
-      <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Purchase Ticket</h2>
+      <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Purchase ${show.ticketType} Ticket</h2>
+      <p style="margin: 0; color: #333; font-size: 1.5rem;">$${show.ticketCost}</p>
       <button class="close-modal" style="
         position: absolute;
         top: 1rem;
@@ -1157,9 +1193,8 @@ function openPaymentModal(show) {
     
     <div class="show-info" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
       <h3 style="margin: 0 0 0.5rem 0; color: #333;">${show.showName || 'Show Name'}</h3>
-      <p style="margin: 0.25rem 0; color: #666;">Date: ${show.showDate || 'TBD'}</p>
-      <p style="margin: 0.25rem 0; color: #666;">Time: ${show.showTime || 'TBD'}</p>
-      <p style="margin: 0.25rem 0; color: #666;">Location: ${show.showLocation || 'TBD'}</p>
+      <p style="margin: 0.25rem 0; color: #666;">${modalFormattedDate || 'TBD'} at ${modalFormattedTime || 'TBD'}</p>
+      <p style="margin: 0.25rem 0; color: #666;">${show.showLocation || 'TBD'}</p>
     </div>
 
     <form class="payment-form" style="display: flex; flex-direction: column; gap: 1rem;">
@@ -2318,7 +2353,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.testGoogleScript = testGoogleScript;
   window.fetchGlobalData = fetchGlobalData;
   window.updateShowsSection = updateShowsSection;
-  window.updateShopSection = updateShopSection;
   window.updateProjectsSection = updateProjectsSection;
   window.regenerateShowCards = () => {
     console.log('Manually regenerating show cards...');
@@ -2741,8 +2775,6 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Global data loaded event received:', event.detail);
     console.log('About to call updateShowsSection...');
     updateShowsSection();
-    console.log('About to call updateShopSection...');
-    updateShopSection();
     console.log('About to call updateProjectsSection...');
     updateProjectsSection();
     console.log('About to call updateVideoSection...');
@@ -2761,10 +2793,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (globalData && globalData.shows) {
       console.log('Global data exists, calling updateShowsSection');
       updateShowsSection();
-    }
-    if (globalData && globalData.products) {
-      console.log('Global data exists, calling updateShopSection');
-      updateShopSection();
     }
     if (globalData && globalData.projects) {
       console.log('Global data exists, calling updateProjectsSection');
@@ -2864,6 +2892,5 @@ export {
   getProducts,
   getMain,
   getData,
-  updateShowsSection,
-  updateShopSection
+  updateShowsSection
 };
