@@ -87,6 +87,63 @@ const routes = {
                         </div>
                     </div>
                 </div>
+                <div id="video-title-banner">
+                    <div id="video-title-scroll">
+                        <span>Experience AEX • Experience AEX • Experience AEX • Experience AEX • Experience AEX • </span>
+                    </div>
+                </div>
+                <div id="carousel" class="light-section">
+                    <div class="carousel-container">
+                        <div class="carousel-track">
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 1">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 2">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 3">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 4">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 5">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 6">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 7">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 8">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 9">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 10">
+                            </div>
+                            <!-- Duplicate first 5 images for seamless loop -->
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 11">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 12">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 13">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 14">
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="${getRandomImage()}" alt="Gallery Image 15">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div id="shows" class="light-section">
                     <h2 id="shows-title">Upcoming Shows</h2>
                     <!-- Dynamic show cards will be inserted here by updateShowsSection() -->

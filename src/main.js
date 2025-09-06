@@ -14,8 +14,8 @@ gsap.config({
 });
 
 // ----- Google Apps Script Endpoints -----
-const GAS_GET_URL  = 'https://script.google.com/macros/s/AKfycbwJu-tbfbnDHf8Sc0EOnn6Gv48UtYg8RpYtCkkqqdBuvoPm74hQygix5SBicVYFBu3zrw/exec';
-const GAS_POST_URL = 'https://script.google.com/macros/s/AKfycbwJu-tbfbnDHf8Sc0EOnn6Gv48UtYg8RpYtCkkqqdBuvoPm74hQygix5SBicVYFBu3zrw/exec';
+const GAS_GET_URL  = 'https://script.google.com/macros/s/AKfycbwgPMgYfzmrm4LLNszQMYDkAp8ZBRLo-TmE0swW63Ylai5JPHuoP4l5oTvOhHgTln7NMg/exec';
+const GAS_POST_URL = 'https://script.google.com/macros/s/AKfycbwgPMgYfzmrm4LLNszQMYDkAp8ZBRLo-TmE0swW63Ylai5JPHuoP4l5oTvOhHgTln7NMg/exec';
 
 // ----- Global App Data -----
 let globalData = null;
@@ -847,6 +847,7 @@ function updateShowsSection() {
   console.log('Processing shows:', shows);
   console.log('Total shows found:', shows.length);
   let activeShowsCount = 0;
+  const activeShows = [];
   
   shows.forEach((show, index) => {
     console.log(`Processing show ${index}:`, show);
@@ -858,31 +859,91 @@ function updateShowsSection() {
     }
     
     console.log(`Creating card for active show: ${show.showName}`);
-    const showCard = createShowCard(show);
-    showCardsContainer.appendChild(showCard);
+    activeShows.push(show);
     activeShowsCount++;
   });
 
-  console.log(`✅ Updated shows section with ${activeShowsCount} active shows`);
+  // Check if there's only one active show and apply special styling
+  const isSingleShow = activeShowsCount === 1;
+  
+  if (isSingleShow) {
+    // Update container styling for single show prominence
+    showCardsContainer.style.cssText = `
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      padding: 2rem 0;
+      margin-top: 4rem;
+    `;
+  } else {
+    // Reset to original horizontal scroll styling for multiple shows
+    showCardsContainer.style.cssText = `
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 1rem 0;
+      margin-top: 4rem;
+      scroll-behavior: smooth;
+    `;
+  }
+
+  // Create and append show cards
+  activeShows.forEach((show, index) => {
+    const showCard = createShowCard(show, isSingleShow);
+    showCardsContainer.appendChild(showCard);
+  });
+
+  console.log(`✅ Updated shows section with ${activeShowsCount} active shows${isSingleShow ? ' (single show - prominent display)' : ''}`);
 }
 
-function createShowCard(show) {
-  console.log('Creating show card for:', show);
+function createShowCard(show, isSingleShow = false) {
+  console.log('Creating show card for:', show, 'isSingleShow:', isSingleShow);
   const showCard = document.createElement('div');
   showCard.className = 'showCard';
   showCard.setAttribute('data-show-id', show.showId);
   
-  // Add styling for horizontal layout
-  showCard.style.cssText = `
-    min-width: 300px;
-    max-width: 350px;
-    flex-shrink: 0;
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-right: 1rem;
-  `;
+  // Add styling - enhanced for single show prominence
+  if (isSingleShow) {
+    showCard.style.cssText = `
+      min-width: 400px;
+      max-width: 500px;
+      width: 100%;
+      flex-shrink: 0;
+      background: white;
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      margin: 0 auto;
+      transform: scale(1.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    `;
+    
+    // Add hover effect for single show
+    showCard.addEventListener('mouseenter', () => {
+      showCard.style.transform = 'scale(1.08)';
+      showCard.style.boxShadow = '0 12px 35px rgba(0, 0, 0, 0.2)';
+    });
+    
+    showCard.addEventListener('mouseleave', () => {
+      showCard.style.transform = 'scale(1.05)';
+      showCard.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
+    });
+  } else {
+    // Original styling for multiple shows
+    showCard.style.cssText = `
+      min-width: 300px;
+      max-width: 350px;
+      flex-shrink: 0;
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-right: 1rem;
+    `;
+  }
   
   // Get a random image for the show from show.showImage or fallback to random image
   let randomImage;
@@ -953,6 +1014,11 @@ function createShowCard(show) {
     }
   }
   
+  // Check if tickets are available for purchase
+  const isTicketAvailable = show.ticketAvailable === true || show.ticketAvailable === 'true' || show.ticketAvailable === 1;
+  const hasProductId = show.showProductId && show.showProductId.trim() !== '';
+  const canPurchase = isTicketAvailable && hasProductId;
+
   showCard.innerHTML = `
     <h3>${show.showName || 'Show Name'}</h3>
     <p>${show.showDesc || 'Show description'}</p>
@@ -963,21 +1029,34 @@ function createShowCard(show) {
       <img id="shows-image" src="${randomImage}" alt="${show.showName || 'Show Image'}">
     </div>
     <div class="showsCta">
-      <p>Reserve a ticket</p>
-      <input type="email" placeholder="Enter your email" class="ticket-input">
-      <button type="submit" class="submit-btn">Submit</button>
+      ${canPurchase ? 
+        `<button type="button" class="purchase-btn">Purchase Ticket</button>` :
+        `<p>Reserve a ticket</p>
+         <input type="email" placeholder="Enter your email" class="ticket-input">
+         <button type="submit" class="submit-btn">Submit</button>`
+      }
     </div>
   `;
 
-  // Add event listeners for the email submission in this specific card
-  const submitBtn = showCard.querySelector('.submit-btn');
-  const ticketInput = showCard.querySelector('.ticket-input');
-  
-  if (submitBtn && ticketInput) {
-    submitBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      handleTicketSubmissionForShow(e, show.showId);
-    });
+  // Add event listeners based on ticket availability
+  if (canPurchase) {
+    const purchaseBtn = showCard.querySelector('.purchase-btn');
+    if (purchaseBtn) {
+      purchaseBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openPaymentModal(show);
+      });
+    }
+  } else {
+    const submitBtn = showCard.querySelector('.submit-btn');
+    const ticketInput = showCard.querySelector('.ticket-input');
+    
+    if (submitBtn && ticketInput) {
+      submitBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        handleTicketSubmissionForShow(e, show.showId);
+      });
+    }
   }
 
   return showCard;
@@ -1019,6 +1098,289 @@ function handleTicketSubmissionForShow(e, showId) {
     console.error('Error submitting ticket request:', error);
     alert('There was an error submitting your request. Please try again.');
   });
+}
+
+// ------------------------------
+// Payment Modal Functions
+// ------------------------------
+function openPaymentModal(show) {
+  console.log('Opening payment modal for show:', show);
+  
+  // Create modal overlay
+  const modalOverlay = document.createElement('div');
+  modalOverlay.className = 'payment-modal-overlay';
+  modalOverlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+  `;
+
+  // Create modal content
+  const modalContent = document.createElement('div');
+  modalContent.className = 'payment-modal-content';
+  modalContent.style.cssText = `
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+  `;
+
+  modalContent.innerHTML = `
+    <div class="modal-header" style="margin-bottom: 1.5rem;">
+      <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Purchase Ticket</h2>
+      <button class="close-modal" style="
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #666;
+        padding: 0.5rem;
+        line-height: 1;
+      ">&times;</button>
+    </div>
+    
+    <div class="show-info" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+      <h3 style="margin: 0 0 0.5rem 0; color: #333;">${show.showName || 'Show Name'}</h3>
+      <p style="margin: 0.25rem 0; color: #666;">Date: ${show.showDate || 'TBD'}</p>
+      <p style="margin: 0.25rem 0; color: #666;">Time: ${show.showTime || 'TBD'}</p>
+      <p style="margin: 0.25rem 0; color: #666;">Location: ${show.showLocation || 'TBD'}</p>
+    </div>
+
+    <form class="payment-form" style="display: flex; flex-direction: column; gap: 1rem;">
+      <div class="form-row" style="display: flex; gap: 1rem;">
+        <div class="form-group" style="flex: 1;">
+          <label for="firstName" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">First Name *</label>
+          <input type="text" id="firstName" name="firstName" required style="
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+          ">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label for="lastName" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Last Name *</label>
+          <input type="text" id="lastName" name="lastName" required style="
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+          ">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="email" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Email Address *</label>
+        <input type="email" id="email" name="email" required style="
+          width: 100%;
+          padding: 0.75rem;
+          border: 2px solid #e1e5e9;
+          border-radius: 6px;
+          font-size: 1rem;
+          transition: border-color 0.3s ease;
+          box-sizing: border-box;
+        ">
+      </div>
+      
+      <div class="form-group">
+        <label for="instagram" style="display: block; margin-bottom: 0.5rem; font-weight: 500; color: #333;">Instagram Handle *</label>
+        <input type="text" id="instagram" name="instagram" placeholder="@username" required style="
+          width: 100%;
+          padding: 0.75rem;
+          border: 2px solid #e1e5e9;
+          border-radius: 6px;
+          font-size: 1rem;
+          transition: border-color 0.3s ease;
+          box-sizing: border-box;
+        ">
+      </div>
+      
+      <div class="form-actions" style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: flex-end;">
+        <button type="button" class="cancel-btn" style="
+          padding: 0.75rem 1.5rem;
+          border: 2px solid #e1e5e9;
+          background: white;
+          color: #666;
+          border-radius: 6px;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        ">Cancel</button>
+        <button type="submit" class="purchase-btn" style="
+          padding: 0.6rem 1.5rem;
+          border: none;
+          background: black;
+          color: white;
+          border-radius: 6px;
+          font-size: 0.9rem;
+          font-family: 'Courier New', Courier, monospace;
+          font-weight: 300;
+          letter-spacing: 0.8px;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        ">Complete Purchase</button>
+      </div>
+    </form>
+  `;
+
+  modalOverlay.appendChild(modalContent);
+  document.body.appendChild(modalOverlay);
+
+  // Add event listeners
+  const closeBtn = modalContent.querySelector('.close-modal');
+  const cancelBtn = modalContent.querySelector('.cancel-btn');
+  const purchaseBtn = modalContent.querySelector('.purchase-btn');
+  const form = modalContent.querySelector('.payment-form');
+
+  const closeModal = () => {
+    document.body.removeChild(modalOverlay);
+  };
+
+  closeBtn.addEventListener('click', closeModal);
+  cancelBtn.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) closeModal();
+  });
+
+  // Add input focus styles
+  const inputs = modalContent.querySelectorAll('input');
+  inputs.forEach(input => {
+    input.addEventListener('focus', () => {
+      input.style.borderColor = '#007bff';
+    });
+    input.addEventListener('blur', () => {
+      input.style.borderColor = '#e1e5e9';
+    });
+  });
+
+  // Add button hover effects
+  cancelBtn.addEventListener('mouseenter', () => {
+    cancelBtn.style.backgroundColor = '#f8f9fa';
+    cancelBtn.style.borderColor = '#d1d5db';
+  });
+  cancelBtn.addEventListener('mouseleave', () => {
+    cancelBtn.style.backgroundColor = 'white';
+    cancelBtn.style.borderColor = '#e1e5e9';
+  });
+
+  purchaseBtn.addEventListener('mouseenter', () => {
+    purchaseBtn.style.backgroundColor = '#333';
+    purchaseBtn.style.transform = 'translateY(-2px)';
+  });
+  purchaseBtn.addEventListener('mouseleave', () => {
+    purchaseBtn.style.backgroundColor = 'black';
+    purchaseBtn.style.transform = 'translateY(0)';
+  });
+
+  // Handle form submission
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    handlePaymentSubmission(show, form);
+  });
+}
+
+function handlePaymentSubmission(show, form) {
+  const formData = new FormData(form);
+  const firstName = formData.get('firstName').trim();
+  const lastName = formData.get('lastName').trim();
+  const email = formData.get('email').trim();
+  const instagram = formData.get('instagram').trim();
+
+  // Validation
+  if (!firstName || !lastName || !email || !instagram) {
+    alert('Please fill in all required fields');
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    alert('Please enter a valid email address');
+    return;
+  }
+
+  // Validate Instagram handle format
+  const instagramHandle = instagram.startsWith('@') ? instagram : `@${instagram}`;
+  if (!/^@[a-zA-Z0-9._]+$/.test(instagramHandle)) {
+    alert('Please enter a valid Instagram handle (e.g., @username)');
+    return;
+  }
+
+  // Prepare payment data
+  const paymentData = {
+    firstName,
+    lastName,
+    email,
+    instagram: instagramHandle,
+    showId: show.showId,
+    showProductId: show.showProductId,
+    showName: show.showName,
+    timestamp: new Date().toISOString(),
+    source: 'AEX Website',
+    tab: 'AEXMain',
+    ticketType: 'purchase'
+  };
+
+  console.log('Processing payment for show:', paymentData);
+
+  // Here you would integrate with your payment processor (Stripe, PayPal, etc.)
+  // For now, we'll simulate the payment process
+  const purchaseBtn = form.querySelector('.purchase-btn');
+  const originalText = purchaseBtn.textContent;
+  
+  purchaseBtn.textContent = 'Processing...';
+  purchaseBtn.disabled = true;
+  purchaseBtn.style.backgroundColor = '#666';
+
+  // Simulate payment processing
+  setTimeout(() => {
+    // Send data to Google Apps Script
+    fetch(GAS_POST_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(paymentData)
+    })
+    .then(() => {
+      console.log('Payment data sent to Google Script for show:', show.showId);
+      alert('Payment processed successfully! You will receive a confirmation email shortly.');
+      
+      // Close modal
+      const modalOverlay = document.querySelector('.payment-modal-overlay');
+      if (modalOverlay) {
+        document.body.removeChild(modalOverlay);
+      }
+    })
+    .catch((error) => {
+      console.error('Error processing payment:', error);
+      alert('There was an error processing your payment. Please try again.');
+      
+      // Reset button
+      purchaseBtn.textContent = originalText;
+      purchaseBtn.disabled = false;
+      purchaseBtn.style.backgroundColor = 'black';
+    });
+  }, 2000); // 2 second delay to simulate processing
 }
 
 // ------------------------------

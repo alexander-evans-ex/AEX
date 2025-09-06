@@ -39,10 +39,12 @@ Typing:
 - `vid1`, `vid2`, `vid3`, `aboutInfo` → string
 
 ### AEXShows
-Headers: `showId, showActive, showImage, showName, showDesc, showDate, showTime, showLocation`  
+Headers: `showId, showActive, showImage, showName, showDesc, showDate, showTime, showLocation, ticketAvailable, showProductId`  
 Typing:
 - `showId` → string  
 - `showActive` → boolean (`true/yes/1` => true)  
+- `ticketAvailable` → boolean (`true/yes/1` => true)
+- `showProductId` → string
 - Others → string
 
 ### AEXProjects
@@ -61,7 +63,16 @@ Typing:
 - `productSizes` → array (split commas/newlines)
 
 ### AEXMain
-- No fixed schema; use first row as headers → generic objects (keys normalized: spaces → `_`, non-word chars removed, leading digits prefixed).
+Headers: `timestamp, ticketType, email, instagram, source, status, showId, paymentId`  
+Typing:
+- `timestamp` → string (ISO-8601 format)
+- `ticketType` → string
+- `email` → string
+- `instagram` → string
+- `source` → string
+- `status` → string
+- `showId` → string
+- `paymentId` → string
 
 ### AEXData
 Headers: `mainSection, mainSectionImages, vid1, vid2, vid3, aboutInfo`  
