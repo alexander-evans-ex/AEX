@@ -5,7 +5,7 @@ const mainImagePath = getRandomImage();
 const secondImagePath = getRandomImage();
 const thirdImagePath = getRandomImage();
 
-console.log(`Selected image: ${mainImagePath} (from ${getImageCount()} available images)`);
+// console.log(`Selected image: ${mainImagePath} (from ${getImageCount()} available images)`);
  
 // Route configuration object
 const routes = {

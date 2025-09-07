@@ -110,4 +110,4 @@ export function getImageCount() {
     return imageManifest.length;
 }
 
-console.log(`Image manifest loaded: ${imageManifest.length} images available`);
+// console.log(`Image manifest loaded: ${imageManifest.length} images available`);

@@ -4,9 +4,9 @@ export const STRIPE_CONFIG = {
   test: {
     publishableKey: 'pk_test_51RmOiEQDQ6Nh8Wgn3q4NAqrDxFDnbJOVCIIKwG3SbhyO7zHPSv2S4ssBX9kN7LCPKHsdY3t5bEW2qvIzLniE5YR600pB91m9wA'
   },
-  // Live keys for production (replace with your actual live keys)
+  // Live keys for production
   live: {
-    publishableKey: 'pk_live_your_live_publishable_key_here'
+    publishableKey: 'pk_live_51RmOi1GKJ9UTuHzU7EHYcU618WsP1rtNfKPiV0MunJk248ifLl04PVH6kijcnG9ckpId2UIiEYSPLTKZl7FOTUT800sGn2YJRw'
   }
 };
 

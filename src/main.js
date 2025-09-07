@@ -27,18 +27,15 @@ function initializeMobileMenu() {
             const currentSection = getCurrentSection();
             const isLightSection = currentSection === 'carousel' || currentSection === 'contact' || currentSection === 'shows';
             
-            console.log('Current section:', currentSection, 'Is light section:', isLightSection);
             
             if (isLightSection) {
                 // Light section - use dark contrast (black)
                 mobileToggle.classList.add('dark-contrast');
                 mobileDropdown.classList.add('dark-contrast');
-                console.log('Applied dark-contrast class to mobile menu');
             } else {
                 // Dark section - use light contrast (white)
                 mobileToggle.classList.remove('dark-contrast');
                 mobileDropdown.classList.remove('dark-contrast');
-                console.log('Removed dark-contrast class from mobile menu');
             }
         }
         
@@ -70,12 +67,8 @@ function initializeMobileMenu() {
         
         mobileToggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            console.log('Mobile menu clicked!');
-            console.log('Before toggle - active class:', mobileToggle.classList.contains('active'));
             mobileToggle.classList.toggle('active');
             mobileDropdown.classList.toggle('active');
-            console.log('After toggle - active class:', mobileToggle.classList.contains('active'));
-            console.log('Dropdown display:', window.getComputedStyle(mobileDropdown).display);
         });
         
         // Close mobile menu when clicking on a menu item and scroll to section
@@ -125,10 +118,10 @@ function initializeMobileMenu() {
         
         // Manual test - add click handler to toggle contrast for testing
         mobileToggle.addEventListener('dblclick', () => {
-            console.log('Double-clicked mobile menu - toggling contrast for testing');
+            // console.log('Double-clicked mobile menu - toggling contrast for testing');
             mobileToggle.classList.toggle('dark-contrast');
             mobileDropdown.classList.toggle('dark-contrast');
-            console.log('Current classes:', mobileToggle.className);
+            // console.log('Current classes:', mobileToggle.className);
         });
     }
 }
@@ -558,7 +551,7 @@ function handleTicketSubmission(e) {
         body: JSON.stringify(formData)
     })
   .then(() => {
-        console.log('Request sent to Google Script');
+        // console.log('Request sent to Google Script');
         ticketInput.value = '';
         alert('Thank you! Your ticket request has been submitted.');
     })
@@ -593,12 +586,12 @@ let currentProxyIndex = 0;
 
 // Test function to check if Google Apps Script is accessible
 async function testGoogleScript() {
-  console.log('Testing Google Apps Script accessibility...');
-  console.log('Script URL:', GAS_GET_URL);
+  // console.log('Testing Google Apps Script accessibility...');
+  // console.log('Script URL:', GAS_GET_URL);
   
   try {
     const proxyUrl = CORS_PROXY + encodeURIComponent(GAS_GET_URL);
-    console.log('Using CORS proxy:', proxyUrl);
+    // console.log('Using CORS proxy:', proxyUrl);
     
     const response = await fetch(proxyUrl, {
       method: 'GET',
@@ -607,8 +600,8 @@ async function testGoogleScript() {
       }
     });
 
-    console.log('Response status:', response.status);
-    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+    // console.log('Response status:', response.status);
+    // console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -616,7 +609,7 @@ async function testGoogleScript() {
 
     // Get response as text first
     const responseText = await response.text();
-    console.log('Raw response (first 500 chars):', responseText.substring(0, 500));
+    // console.log('Raw response (first 500 chars):', responseText.substring(0, 500));
     
     // Check if it's HTML
     if (responseText.trim().toLowerCase().startsWith('<!doctype') || 
@@ -627,8 +620,8 @@ async function testGoogleScript() {
     }
 
     const data = JSON.parse(responseText);
-    console.log('✅ Google Apps Script is accessible via CORS proxy');
-    console.log('Test response:', data);
+    // console.log('✅ Google Apps Script is accessible via CORS proxy');
+    // console.log('Test response:', data);
     return data;
   } catch (error) {
     console.error('❌ Google Apps Script test failed:', error);
@@ -638,12 +631,8 @@ async function testGoogleScript() {
 
 async function fetchGlobalData() {
   try {
-        console.log('Fetching data from Google Script...');
-    console.log('Original URL:', GAS_GET_URL);
-
     // Use CORS proxy to handle cross-origin requests
     const proxyUrl = CORS_PROXIES[currentProxyIndex] + encodeURIComponent(GAS_GET_URL);
-    console.log('Using CORS proxy:', proxyUrl);
     
     const response = await fetch(proxyUrl, {
             method: 'GET',
@@ -652,8 +641,8 @@ async function fetchGlobalData() {
             }
         });
 
-    console.log('Response status:', response.status);
-    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+    // console.log('Response status:', response.status);
+    // console.log('Response headers:', Object.fromEntries(response.headers.entries()));
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -661,7 +650,7 @@ async function fetchGlobalData() {
         
     // Get the response as text first to see what we're actually getting
     const responseText = await response.text();
-    console.log('Raw response (first 500 chars):', responseText.substring(0, 500));
+    // console.log('Raw response (first 500 chars):', responseText.substring(0, 500));
     
     // Check if it's HTML (error page)
     if (responseText.trim().toLowerCase().startsWith('<!doctype') || 
@@ -685,26 +674,26 @@ async function fetchGlobalData() {
       throw new Error('Invalid JSON response from Google Apps Script');
     }
 
-    console.log('✅ Data fetched successfully via CORS proxy');
+    // console.log('✅ Data fetched successfully via CORS proxy');
     return processFetchedData(data);
         
     } catch (error) {
         console.error('Error fetching global data:', error);
-    console.log('\n🔧 Troubleshooting steps:');
-    console.log('1. Check if Google Apps Script is deployed as a web app');
-    console.log('2. Verify deployment is set to "Anyone" access');
-    console.log('3. Test the script URL directly in browser');
-    console.log('4. Check if the CORS proxy service is working');
-    console.log('5. Verify the script URL is correct and accessible');
+    // console.log('\n🔧 Troubleshooting steps:');
+    // console.log('1. Check if Google Apps Script is deployed as a web app');
+    // console.log('2. Verify deployment is set to "Anyone" access');
+    // console.log('3. Test the script URL directly in browser');
+    // console.log('4. Check if the CORS proxy service is working');
+    // console.log('5. Verify the script URL is correct and accessible');
     
     // Try next CORS proxy
     currentProxyIndex = (currentProxyIndex + 1) % CORS_PROXIES.length;
     
     if (currentProxyIndex === 0) {
-      console.log('All CORS proxies failed, falling back to local data...');
+      // console.log('All CORS proxies failed, falling back to local data...');
       return useFallbackData();
     } else {
-      console.log('Retrying with next proxy...');
+      // console.log('Retrying with next proxy...');
       return fetchGlobalData();
     }
   }
@@ -728,21 +717,21 @@ function processFetchedData(data) {
     status:      data.__status || 200
   };
         
-        console.log('Data fetched successfully:', globalData);
-  console.log('Server status:', data.__status || 200);
+        // console.log('Data fetched successfully:', globalData);
+  // console.log('Server status:', data.__status || 200);
   
   // Console out the database object for debugging
-  console.log('=== DATABASE OBJECT ===');
-  console.log('Raw data from server:', data);
-  console.log('Processed globalData:', globalData);
-  console.log('Main data:', globalData.main);
-  console.log('Data section:', globalData.data);
-  console.log('Shows data:', globalData.shows);
-  console.log('Projects data:', globalData.projects);
-  console.log('Products data:', globalData.products);
-  console.log('Last updated:', globalData.lastUpdated);
-  console.log('Version:', globalData.version);
-  console.log('======================');
+  // console.log('=== DATABASE OBJECT ===');
+  // console.log('Raw data from server:', data);
+  // console.log('Processed globalData:', globalData);
+  // console.log('Main data:', globalData.main);
+  // console.log('Data section:', globalData.data);
+  // console.log('Shows data:', globalData.shows);
+  // console.log('Projects data:', globalData.projects);
+  // console.log('Products data:', globalData.products);
+  // console.log('Last updated:', globalData.lastUpdated);
+  // console.log('Version:', globalData.version);
+  // console.log('======================');
 
   // Notify listeners
   window.dispatchEvent(new CustomEvent('globalDataLoaded', { detail: { data: globalData } }));
@@ -865,19 +854,19 @@ function useFallbackData() {
     status: 200
         };
         
-        console.log('Using fallback data:', globalData);
+        // console.log('Using fallback data:', globalData);
   
   // Console out the fallback database object for debugging
-  console.log('=== FALLBACK DATABASE OBJECT ===');
-  console.log('Fallback globalData:', globalData);
-  console.log('Fallback main data:', globalData.main);
-  console.log('Fallback data section:', globalData.data);
-  console.log('Fallback shows data:', globalData.shows);
-  console.log('Fallback projects data:', globalData.projects);
-  console.log('Fallback products data:', globalData.products);
-  console.log('Fallback last updated:', globalData.lastUpdated);
-  console.log('Fallback version:', globalData.version);
-  console.log('================================');
+  // console.log('=== FALLBACK DATABASE OBJECT ===');
+  // console.log('Fallback globalData:', globalData);
+  // console.log('Fallback main data:', globalData.main);
+  // console.log('Fallback data section:', globalData.data);
+  // console.log('Fallback shows data:', globalData.shows);
+  // console.log('Fallback projects data:', globalData.projects);
+  // console.log('Fallback products data:', globalData.products);
+  // console.log('Fallback last updated:', globalData.lastUpdated);
+  // console.log('Fallback version:', globalData.version);
+  // console.log('================================');
   
   // Still notify listeners with fallback data
   window.dispatchEvent(new CustomEvent('globalDataLoaded', { detail: { data: globalData, isFallback: true } }));
@@ -894,7 +883,7 @@ function getGlobalDataByKey(key) {
 }
 
 async function refreshGlobalData() {
-    console.log('Refreshing global data...');
+    // console.log('Refreshing global data...');
     return await fetchGlobalData();
 }
 
@@ -909,33 +898,23 @@ function getData()     { return (globalData && globalData.data)     || []; }
 // Dynamic Shows Section Update
 // ------------------------------
 function updateShowsSection() {
-  console.log('=== updateShowsSection called ===');
+  // console.log('=== updateShowsSection called ===');
   const shows = getShows();
   const showsSection = document.querySelector('#shows');
   
-  console.log('Debug info:', {
-    shows: shows,
-    showsLength: shows.length,
-    showsSection: showsSection,
-    showsSectionExists: !!showsSection,
-    globalData: globalData,
-    globalDataExists: !!globalData,
-    showsData: globalData ? globalData.shows : 'No globalData',
-    showsDataLength: globalData && globalData.shows ? globalData.shows.length : 0
-  });
   
   if (!showsSection) {
     console.error('❌ Shows section not found in DOM');
-    console.log('Available sections:', document.querySelectorAll('[id]'));
+    // console.log('Available sections:', document.querySelectorAll('[id]'));
         return;
     }
 
   if (!shows.length) {
-    console.log('❌ No shows data available');
+    // console.log('❌ No shows data available');
     return;
   }
 
-  console.log('✅ Shows section found and shows data available');
+  // console.log('✅ Shows section found and shows data available');
 
   // Find the existing showCard container or create one
   let showCardsContainer = showsSection.querySelector('.show-cards-container');
@@ -964,21 +943,21 @@ function updateShowsSection() {
   showCardsContainer.innerHTML = '';
 
   // Create show cards for each active show
-  console.log('Processing shows:', shows);
-  console.log('Total shows found:', shows.length);
+  // console.log('Processing shows:', shows);
+  // console.log('Total shows found:', shows.length);
   let activeShowsCount = 0;
   const activeShows = [];
   
   shows.forEach((show, index) => {
-    console.log(`Processing show ${index}:`, show);
-    console.log(`Show active status: ${show.showActive} (type: ${typeof show.showActive})`);
+    // console.log(`Processing show ${index}:`, show);
+    // console.log(`Show active status: ${show.showActive} (type: ${typeof show.showActive})`);
     
     if (!show.showActive) {
-      console.log(`Skipping show ${index} - not active`);
+      // console.log(`Skipping show ${index} - not active`);
       return; // Only show active shows
     }
     
-    console.log(`Creating card for active show: ${show.showName}`);
+    // console.log(`Creating card for active show: ${show.showName}`);
     activeShows.push(show);
     activeShowsCount++;
   });
@@ -1022,7 +1001,7 @@ function updateShowsSection() {
     addShowButtons(activeShows, showCardsContainer);
   }
 
-  console.log(`✅ Updated shows section with ${activeShowsCount} active shows${isSingleShow ? ' (single show - prominent display)' : ''}`);
+  // console.log(`✅ Updated shows section with ${activeShowsCount} active shows${isSingleShow ? ' (single show - prominent display)' : ''}`);
 }
 
 // Function to add pagination dots for mobile shows
@@ -1179,7 +1158,7 @@ function updateActiveButton(container, showButtons) {
 }
 
 function createShowCard(show, isSingleShow = false) {
-  console.log('Creating show card for:', show, 'isSingleShow:', isSingleShow);
+  // console.log('Creating show card for:', show, 'isSingleShow:', isSingleShow);
   const showCard = document.createElement('div');
   showCard.className = 'showCard';
   showCard.setAttribute('data-show-id', show.showId);
@@ -1229,11 +1208,11 @@ function createShowCard(show, isSingleShow = false) {
   if (show.showImage && show.showImage.trim()) {
     // Split comma-separated image URLs and select a random one
     const imageUrls = show.showImage.split(',').map(url => url.trim()).filter(url => url);
-    console.log('=== SHOW IMAGE DEBUG ===');
-    console.log('Show name:', show.showName);
-    console.log('Show image data:', show.showImage);
-    console.log('Split image URLs:', imageUrls);
-    console.log('Number of URLs:', imageUrls.length);
+    // console.log('=== SHOW IMAGE DEBUG ===');
+    // console.log('Show name:', show.showName);
+    // console.log('Show image data:', show.showImage);
+    // console.log('Split image URLs:', imageUrls);
+    // console.log('Number of URLs:', imageUrls.length);
     
     if (imageUrls.length > 0) {
       // Check if the URL is a full URL or just a filename
@@ -1244,19 +1223,19 @@ function createShowCard(show, isSingleShow = false) {
         const randomSeed = (timestamp + Math.random() * 1000) % 1;
         const randomIndex = Math.floor(randomSeed * imageUrls.length);
         randomImage = imageUrls[randomIndex];
-        console.log('Using full URL from show data:', randomImage);
+        // console.log('Using full URL from show data:', randomImage);
       } else {
         // It's just a filename, use fallback random image
         randomImage = getRandomImage();
-        console.log('Show image is just a filename, using fallback random image:', randomImage);
+        // console.log('Show image is just a filename, using fallback random image:', randomImage);
       }
     } else {
       randomImage = getRandomImage();
-      console.log('No valid image URLs in show data, using fallback random image:', randomImage);
+      // console.log('No valid image URLs in show data, using fallback random image:', randomImage);
     }
   } else {
     randomImage = getRandomImage();
-    console.log('No show image data available, using fallback random image:', randomImage);
+    // console.log('No show image data available, using fallback random image:', randomImage);
   }
   
   // Format the date properly
@@ -1272,7 +1251,7 @@ function createShowCard(show, isSingleShow = false) {
         });
       }
     } catch (e) {
-      console.log('Date formatting error:', e);
+      // console.log('Date formatting error:', e);
     }
   }
   
@@ -1289,7 +1268,7 @@ function createShowCard(show, isSingleShow = false) {
         }).toLowerCase();
       }
     } catch (e) {
-      console.log('Time formatting error:', e);
+      // console.log('Time formatting error:', e);
     }
   }
   
@@ -1298,7 +1277,7 @@ function createShowCard(show, isSingleShow = false) {
   const hasProductId = show.showProductId && show.showProductId.trim() !== '';
   const canPurchase = isTicketAvailable && hasProductId;
   
-  console.log('Show ticket type:', show);
+  // console.log('Show ticket type:', show);
 
   showCard.innerHTML = `
     <h3><b>${show.showName || 'Show Name'}</b></h3>
@@ -1367,7 +1346,7 @@ function handleTicketSubmissionForShow(e, showId) {
     body: JSON.stringify(formData)
   })
   .then(() => {
-    console.log('Ticket request sent to Google Script for show:', showId);
+    // console.log('Ticket request sent to Google Script for show:', showId);
     ticketInput.value = '';
     alert('Thank you! Your ticket request has been submitted.');
   })
@@ -1381,7 +1360,7 @@ function handleTicketSubmissionForShow(e, showId) {
 // Payment Modal Functions
 // ------------------------------
 function openPaymentModal(show) {
-  console.log('Opening payment modal for show:', show);
+  // console.log('Opening payment modal for show:', show);
   
   // Format the date and time for the modal
   let modalFormattedDate = show.showDate;
@@ -1396,7 +1375,7 @@ function openPaymentModal(show) {
         });
       }
     } catch (e) {
-      console.log('Date formatting error:', e);
+      // console.log('Date formatting error:', e);
     }
   }
   
@@ -1412,7 +1391,7 @@ function openPaymentModal(show) {
         }).toLowerCase();
       }
     } catch (e) {
-      console.log('Time formatting error:', e);
+      // console.log('Time formatting error:', e);
     }
   }
   
@@ -1713,7 +1692,7 @@ function handlePaymentSubmission(show, form) {
     ticketType: 'purchase'
   };
 
-  console.log('Processing payment for show:', paymentData);
+  // console.log('Processing payment for show:', paymentData);
 
   // Here you would integrate with your payment processor (Stripe, PayPal, etc.)
   // For now, we'll simulate the payment process
@@ -1734,7 +1713,7 @@ function handlePaymentSubmission(show, form) {
       body: JSON.stringify(paymentData)
     })
     .then(() => {
-      console.log('Payment data sent to Google Script for show:', show.showId);
+      // console.log('Payment data sent to Google Script for show:', show.showId);
       
       // Close payment modal
       const modalOverlay = document.querySelector('.payment-modal-overlay');
@@ -1818,7 +1797,7 @@ async function handleStripePayment(show, form, stripe, cardElement) {
       return;
     }
 
-    console.log('Payment method created:', paymentMethod);
+    // console.log('Payment method created:', paymentMethod);
     
     // Create payment intent using API endpoint
     const amount = parseFloat(show.ticketCost || '25.00');
@@ -1855,7 +1834,7 @@ async function handleStripePayment(show, form, stripe, cardElement) {
     
     if (paymentIntent.status === 'succeeded') {
       // Payment succeeded immediately
-      console.log('Payment succeeded:', paymentIntent);
+      // console.log('Payment succeeded:', paymentIntent);
       
       // Close payment modal
       const modalOverlay = document.querySelector('.payment-modal-overlay');
@@ -1886,7 +1865,7 @@ async function handleStripePayment(show, form, stripe, cardElement) {
         body: JSON.stringify(paymentData)
       })
       .then(() => {
-        console.log('Payment data sent to Google Script for show:', show.showId);
+        // console.log('Payment data sent to Google Script for show:', show.showId);
         showConfirmationModal('Payment processed successfully! You will receive a confirmation email shortly.', 'success');
       })
       .catch((error) => {
@@ -1905,7 +1884,7 @@ async function handleStripePayment(show, form, stripe, cardElement) {
         submitBtn.style.backgroundColor = 'black';
       } else {
         // Payment succeeded after 3D Secure
-        console.log('Payment succeeded after 3D Secure:', paymentIntent);
+        // console.log('Payment succeeded after 3D Secure:', paymentIntent);
         
         // Close payment modal
         const modalOverlay = document.querySelector('.payment-modal-overlay');
@@ -1936,7 +1915,7 @@ async function handleStripePayment(show, form, stripe, cardElement) {
           body: JSON.stringify(paymentData)
         })
         .then(() => {
-          console.log('Payment data sent to Google Script for show:', show.showId);
+          // console.log('Payment data sent to Google Script for show:', show.showId);
           showConfirmationModal('Payment processed successfully! You will receive a confirmation email shortly.', 'success');
         })
         .catch((error) => {
@@ -1967,7 +1946,7 @@ async function handleStripePayment(show, form, stripe, cardElement) {
 // Reservation Modal Functions
 // ------------------------------
 function openReservationModal(show) {
-  console.log('Opening reservation modal for show:', show);
+  // console.log('Opening reservation modal for show:', show);
   
   // Format the date and time for the modal
   let modalFormattedDate = show.showDate;
@@ -1982,7 +1961,7 @@ function openReservationModal(show) {
         });
       }
     } catch (e) {
-      console.log('Date formatting error:', e);
+      // console.log('Date formatting error:', e);
     }
   }
   
@@ -1998,7 +1977,7 @@ function openReservationModal(show) {
         }).toLowerCase();
       }
     } catch (e) {
-      console.log('Time formatting error:', e);
+      // console.log('Time formatting error:', e);
     }
   }
   
@@ -2245,7 +2224,7 @@ function handleReservationSubmission(show, form) {
     ticketType: 'reservation'
   };
 
-  console.log('Processing reservation for show:', reservationData);
+  // console.log('Processing reservation for show:', reservationData);
 
   // Send data to Google Apps Script
   const reserveBtn = form.querySelector('.reserve-btn');
@@ -2262,7 +2241,7 @@ function handleReservationSubmission(show, form) {
     body: JSON.stringify(reservationData)
   })
   .then(() => {
-    console.log('Reservation data sent to Google Script for show:', show.showId);
+    // console.log('Reservation data sent to Google Script for show:', show.showId);
     
     // Close reservation modal
     const modalOverlay = document.querySelector('.reservation-modal-overlay');
@@ -2290,7 +2269,7 @@ function handleReservationSubmission(show, form) {
 // Confirmation Modal Functions
 // ------------------------------
 function showConfirmationModal(message, type = 'success') {
-  console.log('Showing confirmation modal:', message, type);
+  // console.log('Showing confirmation modal:', message, type);
   
   // Create modal overlay
   const modalOverlay = document.createElement('div');
@@ -2411,33 +2390,23 @@ function showConfirmationModal(message, type = 'success') {
 // Dynamic Projects Section Update
 // ------------------------------
 function updateProjectsSection() {
-  console.log('=== updateProjectsSection called ===');
+  // console.log('=== updateProjectsSection called ===');
   const projects = getProjects();
   const projectsSection = document.querySelector('#projects');
   
-  console.log('Projects debug info:', {
-    projects: projects,
-    projectsLength: projects.length,
-    projectsSection: projectsSection,
-    projectsSectionExists: !!projectsSection,
-    globalData: globalData,
-    globalDataExists: !!globalData,
-    projectsData: globalData ? globalData.projects : 'No globalData',
-    projectsDataLength: globalData && globalData.projects ? globalData.projects.length : 0
-  });
   
   if (!projectsSection) {
     console.error('❌ Projects section not found in DOM');
-    console.log('Available sections:', document.querySelectorAll('[id]'));
+    // console.log('Available sections:', document.querySelectorAll('[id]'));
     return;
   }
 
   if (!projects.length) {
-    console.log('❌ No projects data available');
+    // console.log('❌ No projects data available');
     return;
   }
 
-  console.log('✅ Projects section found and projects data available');
+  // console.log('✅ Projects section found and projects data available');
 
   // Find the existing projectsGrid or create one
   let projectsGrid = projectsSection.querySelector('#projectsGrid');
@@ -2466,56 +2435,56 @@ function updateProjectsSection() {
   projectsGrid.innerHTML = '';
 
   // Create project cards for each active project
-  console.log('Processing projects:', projects);
-  console.log('Total projects found:', projects.length);
+  // console.log('Processing projects:', projects);
+  // console.log('Total projects found:', projects.length);
   let activeProjectsCount = 0;
   
   projects.forEach((project, index) => {
-    console.log(`Processing project ${index}:`, project);
-    console.log(`Project active status: ${project.projectActive} (type: ${typeof project.projectActive})`);
+    // console.log(`Processing project ${index}:`, project);
+    // console.log(`Project active status: ${project.projectActive} (type: ${typeof project.projectActive})`);
     
-    console.log(`Creating card for project: ${project.projectName}`);
+    // console.log(`Creating card for project: ${project.projectName}`);
     const projectCard = createProjectCard(project);
     projectsGrid.appendChild(projectCard);
     activeProjectsCount++;
   });
 
-  console.log(`✅ Updated projects section with ${activeProjectsCount} projects`);
+  // console.log(`✅ Updated projects section with ${activeProjectsCount} projects`);
   
   // Re-setup click handlers for the new project cards
   setupProjectCardClickHandlers();
 }
 
 function createProjectCard(project) {
-  console.log('Creating project card for:', project);
+  // console.log('Creating project card for:', project);
   const projectCard = document.createElement('div');
   projectCard.className = 'project';
   projectCard.setAttribute('data-project-id', project.projectId);
   
   // Get project image from projectImage field or use fallback
   let projectImage;
-  console.log('=== PROJECT IMAGE DEBUG ===');
-  console.log('Project name:', project.projectName);
-  console.log('Project image data:', project.projectImage);
-  console.log('Project image type:', typeof project.projectImage);
+  // console.log('=== PROJECT IMAGE DEBUG ===');
+  // console.log('Project name:', project.projectName);
+  // console.log('Project image data:', project.projectImage);
+  // console.log('Project image type:', typeof project.projectImage);
   
   if (project.projectImage && project.projectImage.trim()) {
     const imageUrl = project.projectImage.trim();
-    console.log('Trimmed image URL:', imageUrl);
-    console.log('Starts with http:', imageUrl.startsWith('http'));
-    console.log('Starts with /:', imageUrl.startsWith('/'));
+    // console.log('Trimmed image URL:', imageUrl);
+    // console.log('Starts with http:', imageUrl.startsWith('http'));
+    // console.log('Starts with /:', imageUrl.startsWith('/'));
     
     // Check if it's a full URL or just a filename
     if (imageUrl.startsWith('http') || imageUrl.startsWith('https') || imageUrl.startsWith('/')) {
       projectImage = imageUrl;
-      console.log('✅ Using project image URL:', projectImage);
+      // console.log('✅ Using project image URL:', projectImage);
     } else {
       projectImage = getRandomImage();
-      console.log('❌ Project image is just a filename, using fallback random image:', projectImage);
+      // console.log('❌ Project image is just a filename, using fallback random image:', projectImage);
     }
   } else {
     projectImage = getRandomImage();
-    console.log('❌ No project image data available, using fallback random image:', projectImage);
+    // console.log('❌ No project image data available, using fallback random image:', projectImage);
   }
   
   projectCard.innerHTML = `
@@ -2624,7 +2593,7 @@ function setupProjectCardClickHandlers() {
         globalData.projects.find(p => p.projectId === projectId) : null;
       
       if (!project) {
-        console.log('Project data not found for ID:', projectId);
+        // console.log('Project data not found for ID:', projectId);
         return;
       }
       
@@ -2754,12 +2723,12 @@ function showProjectImageFallback(project) {
     projectMedia.innerHTML = `
       <img src="${imageUrl}" alt="${project.projectName}" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;">
     `;
-    console.log('Showing project image fallback:', imageUrl);
+    // console.log('Showing project image fallback:', imageUrl);
   }
 }
 
 function displayProjectDetails(project) {
-  console.log('Displaying project details for:', project);
+  // console.log('Displaying project details for:', project);
   
   // Remove any existing project detail display
   const existingDetail = document.querySelector('#project-detail-display');
@@ -2829,11 +2798,11 @@ function displayProjectDetails(project) {
     mediaContent = `
       <div class="project-media" style="width: 100%; margin-bottom: 1.5rem; position: relative;">
         <video id="project-video" autoplay muted loop preload="metadata" playsinline style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px; user-select: none; pointer-events: none;" 
-               onloadstart="console.log('Video loading:', this.src);"
-               oncanplay="console.log('Video can play:', this.src);"
-               onerror="console.log('Video error:', this.error, 'Code:', this.error?.code); this.style.display='none'; this.nextElementSibling.style.display='block'; showProjectImageFallback(project);"
-               onloadeddata="console.log('Video data loaded successfully');"
-               onstalled="console.log('Video stalled, trying to recover'); this.load();">
+               onloadstart="// console.log('Video loading:', this.src);"
+               oncanplay="// console.log('Video can play:', this.src);"
+               onerror="// console.log('Video error:', this.error, 'Code:', this.error?.code); this.style.display='none'; this.nextElementSibling.style.display='block'; showProjectImageFallback(project);"
+               onloadeddata="// console.log('Video data loaded successfully');"
+               onstalled="// console.log('Video stalled, trying to recover'); this.load();">
           <source src="${project.projectVideo}" type="video/mp4">
           <source src="${project.projectVideo}" type="video/webm">
           <source src="${project.projectVideo}" type="video/quicktime">
@@ -3012,7 +2981,7 @@ function displayProjectDetails(project) {
     // Add timeout fallback - if video doesn't load within 5 seconds, show image
     const videoTimeout = setTimeout(() => {
       if (video.readyState < 2) { // HAVE_CURRENT_DATA
-        console.log('Video timeout - falling back to image');
+        // console.log('Video timeout - falling back to image');
         video.style.display = 'none';
         const fallbackDiv = video.nextElementSibling;
         if (fallbackDiv) {
@@ -3265,34 +3234,24 @@ function displayProjectDetails(project) {
 // Dynamic Shop Section Update
 // ------------------------------
 function updateShopSection() {
-  console.log('=== updateShopSection called ===');
+  // console.log('=== updateShopSection called ===');
   const products = getProducts();
   const shopSection = document.querySelector('#shop');
   
-  console.log('Shop debug info:', {
-    products: products,
-    productsLength: products.length,
-    shopSection: shopSection,
-    shopSectionExists: !!shopSection,
-    globalData: globalData,
-    globalDataExists: !!globalData,
-    productsData: globalData ? globalData.products : 'No globalData',
-    productsDataLength: globalData && globalData.products ? globalData.products.length : 0
-  });
   
   if (!shopSection) {
     console.error('❌ Shop section not found in DOM');
-    console.log('Available sections:', document.querySelectorAll('[id]'));
+    // console.log('Available sections:', document.querySelectorAll('[id]'));
     return;
   }
 
   if (!products.length) {
-    console.log('❌ No products data available - hiding shop section');
+    // console.log('❌ No products data available - hiding shop section');
     shopSection.style.display = 'none';
     return;
   }
 
-  console.log('✅ Shop section found and products data available');
+  // console.log('✅ Shop section found and products data available');
 
   // Find the shop products container
   const shopProductsContainer = shopSection.querySelector('#shop-products');
@@ -3305,34 +3264,34 @@ function updateShopSection() {
   shopProductsContainer.innerHTML = '';
 
   // Create product cards for each active product
-  console.log('Processing products:', products);
+  // console.log('Processing products:', products);
   let activeProductsCount = 0;
   
   products.forEach((product, index) => {
-    console.log(`Processing product ${index}:`, product);
-    console.log(`Product active status: ${product.productActive} (type: ${typeof product.productActive})`);
-    console.log(`Boolean conversion: ${Boolean(product.productActive)}`);
-    console.log(`Strict false check: ${product.productActive === false}`);
+    // console.log(`Processing product ${index}:`, product);
+    // console.log(`Product active status: ${product.productActive} (type: ${typeof product.productActive})`);
+    // console.log(`Boolean conversion: ${Boolean(product.productActive)}`);
+    // console.log(`Strict false check: ${product.productActive === false}`);
     
     if (!product.productActive) {
-      console.log(`Skipping product ${index} - not active`);
+      // console.log(`Skipping product ${index} - not active`);
       return; // Only show active products
     }
     
-    console.log(`Creating card for active product: ${product.productName}`);
+    // console.log(`Creating card for active product: ${product.productName}`);
     const productCard = createProductCard(product);
     shopProductsContainer.appendChild(productCard);
     activeProductsCount++;
   });
 
   // Show or hide shop section based on active products count
-  console.log(`Total products: ${products.length}, Active products: ${activeProductsCount}`);
+  // console.log(`Total products: ${products.length}, Active products: ${activeProductsCount}`);
   if (activeProductsCount > 0) {
     shopSection.style.display = 'block';
-    console.log(`✅ Updated shop section with ${activeProductsCount} active products`);
+    // console.log(`✅ Updated shop section with ${activeProductsCount} active products`);
   } else {
     shopSection.style.display = 'none';
-    console.log('❌ No active products - hiding shop section');
+    // console.log('❌ No active products - hiding shop section');
   }
 }
 
@@ -3340,18 +3299,10 @@ function updateShopSection() {
 // Dynamic Video Section Update
 // ------------------------------
 function updateVideoSection() {
-  console.log('=== updateVideoSection called ===');
+  // console.log('=== updateVideoSection called ===');
   const data = getData();
   const video = document.querySelector('#aex-video');
   
-  console.log('Video section debug info:', {
-    data: data,
-    dataLength: data.length,
-    video: video,
-    videoExists: !!video,
-    globalData: globalData,
-    globalDataExists: !!globalData
-  });
   
   if (!video) {
     console.error('❌ Video element not found in DOM');
@@ -3364,65 +3315,59 @@ function updateVideoSection() {
   if (data.length > 0) {
     const mainData = data[0];
     videoUrl = mainData.vid1;
-    console.log('Video URL from getData():', videoUrl);
+    // console.log('Video URL from getData():', videoUrl);
   }
   
   // Fallback to globalData if getData() doesn't work
   if (!videoUrl && globalData && globalData.data && globalData.data.length > 0) {
     const mainData = globalData.data[0];
     videoUrl = mainData.vid1;
-    console.log('Video URL from globalData:', videoUrl);
+    // console.log('Video URL from globalData:', videoUrl);
   }
   
   if (videoUrl && videoUrl.trim()) {
-    console.log('✅ Setting video source to:', videoUrl);
+    // console.log('✅ Setting video source to:', videoUrl);
     
     // Update both source elements
     const sources = video.querySelectorAll('source');
-    console.log('Found sources:', sources.length);
+    // console.log('Found sources:', sources.length);
     
     sources.forEach((source, index) => {
-      console.log(`Updating source ${index}:`, source);
+      // console.log(`Updating source ${index}:`, source);
       source.src = videoUrl.trim();
     });
     
     // Load the new source
     video.load();
-    console.log('Video load() called');
+    // console.log('Video load() called');
   } else {
-    console.log('❌ No video URL found in vid1 field');
+    // console.log('❌ No video URL found in vid1 field');
   }
 }
 
 function createProductCard(product) {
-  console.log('Creating product card for:', product);
+  // console.log('Creating product card for:', product);
   const productCard = document.createElement('div');
   productCard.className = 'shop-product';
   productCard.setAttribute('data-product-id', product.productId);
   
   // Use the product's image URL or fallback to random image
   let productImage;
-  console.log('Product data for image:', {
-    productId: product.productId,
-    productName: product.productName,
-    imageUrl: product.imageUrl,
-    allProductKeys: Object.keys(product)
-  });
   
   if (product.imageUrl && product.imageUrl.trim()) {
     const imageUrl = product.imageUrl.trim();
     // Check if the URL is a full URL or just a filename
     if (imageUrl.startsWith('http') || imageUrl.startsWith('https') || imageUrl.startsWith('/')) {
       productImage = imageUrl;
-      console.log('Using full product image URL:', productImage);
+      // console.log('Using full product image URL:', productImage);
     } else {
       productImage = getRandomImage();
-      console.log('Product image is just a filename, using fallback random image:', productImage);
+      // console.log('Product image is just a filename, using fallback random image:', productImage);
     }
   } else {
     productImage = getRandomImage();
-    console.log('No product image URL available, using fallback random image:', productImage);
-    console.log('Available product fields:', Object.keys(product));
+    // console.log('No product image URL available, using fallback random image:', productImage);
+    // console.log('Available product fields:', Object.keys(product));
   }
   
   // Format the price
@@ -3459,7 +3404,7 @@ function createProductCard(product) {
 }
 
 function handleProductClick(e, product) {
-  console.log('Product clicked:', product);
+  // console.log('Product clicked:', product);
   
   // You can implement different actions here:
   // 1. Redirect to a product page
@@ -3469,7 +3414,7 @@ function handleProductClick(e, product) {
   
   if (product.stripeProductId) {
     // If you have Stripe integration, redirect to checkout
-    console.log('Redirecting to Stripe checkout for product:', product.stripeProductId);
+    // console.log('Redirecting to Stripe checkout for product:', product.stripeProductId);
     // window.location.href = `https://checkout.stripe.com/pay/${product.stripeProductId}`;
     alert(`Redirecting to checkout for ${product.productName}...`);
   } else {
@@ -3482,7 +3427,7 @@ function handleProductClick(e, product) {
 // App Init
 // ------------------------------
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Application initialized');
+    // console.log('Application initialized');
     
   // Initialize mobile menu immediately
     initializeMobileMenu();
@@ -3505,64 +3450,64 @@ document.addEventListener('DOMContentLoaded', () => {
   window.updateShowsSection = updateShowsSection;
   window.updateProjectsSection = updateProjectsSection;
   window.regenerateShowCards = () => {
-    console.log('Manually regenerating show cards...');
+    // console.log('Manually regenerating show cards...');
     updateShowsSection();
   };
   
   window.debugShowCards = () => {
-    console.log('=== DEBUGGING SHOW CARDS ===');
-    console.log('Global data:', globalData);
-    console.log('Shows from getShows():', getShows());
-    console.log('Shows section exists:', !!document.querySelector('#shows'));
-    console.log('Show cards container exists:', !!document.querySelector('.show-cards-container'));
-    console.log('Existing show cards:', document.querySelectorAll('.showCard').length);
+    // console.log('=== DEBUGGING SHOW CARDS ===');
+    // console.log('Global data:', globalData);
+    // console.log('Shows from getShows():', getShows());
+    // console.log('Shows section exists:', !!document.querySelector('#shows'));
+    // console.log('Show cards container exists:', !!document.querySelector('.show-cards-container'));
+    // console.log('Existing show cards:', document.querySelectorAll('.showCard').length);
     updateShowsSection();
   };
   
   window.debugProductCards = () => {
-    console.log('=== DEBUGGING PRODUCT CARDS ===');
-    console.log('Global data:', globalData);
-    console.log('Products from getProducts():', getProducts());
-    console.log('Shop section exists:', !!document.querySelector('#shop'));
-    console.log('Existing product cards:', document.querySelectorAll('.shop-product').length);
+    // console.log('=== DEBUGGING PRODUCT CARDS ===');
+    // console.log('Global data:', globalData);
+    // console.log('Products from getProducts():', getProducts());
+    // console.log('Shop section exists:', !!document.querySelector('#shop'));
+    // console.log('Existing product cards:', document.querySelectorAll('.shop-product').length);
     updateShopSection();
   };
   
   window.debugProjectCards = () => {
-    console.log('=== DEBUGGING PROJECT CARDS ===');
-    console.log('Global data exists:', !!globalData);
-    console.log('Global data keys:', globalData ? Object.keys(globalData) : 'No globalData');
-    console.log('Projects in globalData:', globalData ? globalData.projects : 'No globalData');
-    console.log('Projects from getProjects():', getProjects());
-    console.log('Projects section exists:', !!document.querySelector('#projects'));
-    console.log('Projects grid exists:', !!document.querySelector('#projectsGrid'));
-    console.log('Existing project cards:', document.querySelectorAll('.project').length);
-    console.log('Project cards in grid:', document.querySelectorAll('#projectsGrid .project').length);
+    // console.log('=== DEBUGGING PROJECT CARDS ===');
+    // console.log('Global data exists:', !!globalData);
+    // console.log('Global data keys:', globalData ? Object.keys(globalData) : 'No globalData');
+    // console.log('Projects in globalData:', globalData ? globalData.projects : 'No globalData');
+    // console.log('Projects from getProjects():', getProjects());
+    // console.log('Projects section exists:', !!document.querySelector('#projects'));
+    // console.log('Projects grid exists:', !!document.querySelector('#projectsGrid'));
+    // console.log('Existing project cards:', document.querySelectorAll('.project').length);
+    // console.log('Project cards in grid:', document.querySelectorAll('#projectsGrid .project').length);
     
     if (globalData && globalData.projects) {
-      console.log('All projects data:', globalData.projects);
-      console.log('Projects length:', globalData.projects.length);
-      console.log('First project details:', globalData.projects[0]);
+      // console.log('All projects data:', globalData.projects);
+      // console.log('Projects length:', globalData.projects.length);
+      // console.log('First project details:', globalData.projects[0]);
     } else {
-      console.log('No projects data in globalData');
-      console.log('Available data keys:', globalData ? Object.keys(globalData) : 'No globalData');
+      // console.log('No projects data in globalData');
+      // console.log('Available data keys:', globalData ? Object.keys(globalData) : 'No globalData');
     }
     updateProjectsSection();
   };
   
   window.debugGoogleScriptProjects = async () => {
-    console.log('=== DEBUGGING GOOGLE SCRIPT PROJECTS ===');
+    // console.log('=== DEBUGGING GOOGLE SCRIPT PROJECTS ===');
     try {
       const response = await fetch(CORS_PROXY + GOOGLE_SCRIPT_URL);
-      console.log('Response status:', response.status);
+      // console.log('Response status:', response.status);
       const data = await response.json();
-      console.log('Raw Google Script response:', data);
-      console.log('Projects in response:', data.projects);
-      console.log('Projects length:', data.projects ? data.projects.length : 0);
+      // console.log('Raw Google Script response:', data);
+      // console.log('Projects in response:', data.projects);
+      // console.log('Projects length:', data.projects ? data.projects.length : 0);
       if (data.projects) {
-        console.log('First project:', data.projects[0]);
-        console.log('All project names:', data.projects.map(p => p.projectName));
-        console.log('All project images:', data.projects.map(p => p.projectImage));
+        // console.log('First project:', data.projects[0]);
+        // console.log('All project names:', data.projects.map(p => p.projectName));
+        // console.log('All project images:', data.projects.map(p => p.projectImage));
       }
     } catch (error) {
       console.error('Error fetching from Google Script:', error);
@@ -3570,11 +3515,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   window.forceLoadFromScript = async () => {
-    console.log('=== FORCING LOAD FROM GOOGLE SCRIPT ===');
+    // console.log('=== FORCING LOAD FROM GOOGLE SCRIPT ===');
     try {
       await fetchGlobalData();
-      console.log('Fresh data loaded from script');
-      console.log('New globalData:', globalData);
+      // console.log('Fresh data loaded from script');
+      // console.log('New globalData:', globalData);
       updateProjectsSection();
     } catch (error) {
       console.error('Error loading from script:', error);
@@ -3582,100 +3527,93 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   window.checkDataSource = () => {
-    console.log('=== CHECKING DATA SOURCE ===');
-    console.log('Current globalData:', globalData);
-    console.log('Is this fallback data?', globalData && globalData.projects && globalData.projects[0] && globalData.projects[0].projectImage === 'test');
-    console.log('Projects data:', globalData ? globalData.projects : 'No projects');
+    // console.log('=== CHECKING DATA SOURCE ===');
+    // console.log('Current globalData:', globalData);
+    // console.log('Is this fallback data?', globalData && globalData.projects && globalData.projects[0] && globalData.projects[0].projectImage === 'test');
+    // console.log('Projects data:', globalData ? globalData.projects : 'No projects');
     if (globalData && globalData.projects) {
-      console.log('First project image:', globalData.projects[0].projectImage);
-      console.log('All project images:', globalData.projects.map(p => p.projectImage));
+      // console.log('First project image:', globalData.projects[0].projectImage);
+      // console.log('All project images:', globalData.projects.map(p => p.projectImage));
     }
   };
   
   window.forceProjectsUpdate = () => {
-    console.log('=== FORCING PROJECTS UPDATE ===');
-    console.log('Current globalData:', globalData);
+    // console.log('=== FORCING PROJECTS UPDATE ===');
+    // console.log('Current globalData:', globalData);
     if (globalData && globalData.projects) {
-      console.log('Projects in globalData:', globalData.projects);
+      // console.log('Projects in globalData:', globalData.projects);
       updateProjectsSection();
     } else {
-      console.log('No projects in globalData, trying to fetch fresh data...');
+      // console.log('No projects in globalData, trying to fetch fresh data...');
       fetchGlobalData().then(() => {
-        console.log('Fresh data fetched, updating projects...');
+        // console.log('Fresh data fetched, updating projects...');
         updateProjectsSection();
       });
     }
   };
   
   window.testProjectImages = () => {
-    console.log('=== TESTING PROJECT IMAGES ===');
+    // console.log('=== TESTING PROJECT IMAGES ===');
     if (globalData && globalData.projects) {
       globalData.projects.forEach((project, index) => {
-        console.log(`Project ${index}:`, {
-          name: project.projectName,
-          imageUrl: project.projectImage,
-          imageType: typeof project.projectImage,
-          startsWithHttp: project.projectImage ? project.projectImage.startsWith('http') : false,
-          startsWithSlash: project.projectImage ? project.projectImage.startsWith('/') : false
-        });
       });
     } else {
-      console.log('No projects data available');
+      // console.log('No projects data available');
     }
   };
   
   window.makeAllShowsActive = () => {
-    console.log('=== MAKING ALL SHOWS ACTIVE ===');
+    // console.log('=== MAKING ALL SHOWS ACTIVE ===');
     if (globalData && globalData.shows) {
       globalData.shows.forEach(show => {
         show.showActive = true;
-        console.log('Made show active:', show.showName);
+        // console.log('Made show active:', show.showName);
       });
       updateShowsSection();
     }
   };
   
   window.makeAllProjectsActive = () => {
-    console.log('=== MAKING ALL PROJECTS ACTIVE ===');
+    // console.log('=== MAKING ALL PROJECTS ACTIVE ===');
     if (globalData && globalData.projects) {
       globalData.projects.forEach(project => {
         project.projectActive = true;
-        console.log('Made project active:', project.projectName);
+        // console.log('Made project active:', project.projectName);
       });
       updateProjectsSection();
     }
   };
   
   window.testAllCards = () => {
-    console.log('=== TESTING ALL CARDS ===');
-    console.log('Testing show cards...');
+    // console.log('=== TESTING ALL CARDS ===');
+    // console.log('Testing show cards...');
     debugShowCards();
-    console.log('Testing product cards...');
+    // console.log('Testing product cards...');
     debugProductCards();
-    console.log('Testing project cards...');
+    // console.log('Testing project cards...');
     debugProjectCards();
   };
   
   window.debugProjectCards = () => {
-    console.log('=== DEBUGGING PROJECT CARDS ===');
-    console.log('Global data:', globalData);
-    console.log('Projects from getProjects():', getProjects());
-    console.log('Projects section exists:', !!document.querySelector('#projects'));
-    console.log('Projects grid exists:', !!document.querySelector('#projectsGrid'));
-    console.log('Existing project cards:', document.querySelectorAll('.project').length);
-    console.log('Project cards in grid:', document.querySelectorAll('#projectsGrid .project').length);
+    // console.log('=== DEBUGGING PROJECT CARDS ===');
+    // console.log('Global data:', globalData);
+    // console.log('Projects from getProjects():', getProjects());
+    // console.log('Projects section exists:', !!document.querySelector('#projects'));
+    // console.log('Projects grid exists:', !!document.querySelector('#projectsGrid'));
+    // console.log('Existing project cards:', document.querySelectorAll('.project').length);
+    // console.log('Project cards in grid:', document.querySelectorAll('#projectsGrid .project').length);
     
     if (globalData && globalData.projects) {
-      console.log('All projects data:', globalData.projects);
-      console.log('Active projects:', globalData.projects.filter(p => p.projectActive));
+      // console.log('All projects data:', globalData.projects);
+      // console.log('Active projects:', globalData.projects.filter(p => p.projectActive));
     }
   };
   
   window.refreshDataFromGoogle = async () => {
-    console.log('Manually refreshing data from Google Apps Script...');
+    // console.log('Manually refreshing data from Google Apps Script...');
     try {
       await fetchGlobalData();
-      console.log('Data refreshed successfully');
+      // console.log('Data refreshed successfully');
       updateShowsSection();
     } catch (error) {
       console.error('Failed to refresh data:', error);
@@ -3683,52 +3621,52 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   
   window.testVideoUpdate = () => {
-    console.log('Manually testing video update...');
+    // console.log('Manually testing video update...');
     updateVideoSection();
   };
   
   window.forceVideoUpdate = () => {
-    console.log('=== FORCING VIDEO UPDATE ===');
+    // console.log('=== FORCING VIDEO UPDATE ===');
     const video = document.querySelector('#aex-video');
     if (!video) {
       console.error('Video element not found');
       return;
     }
     
-    console.log('Current video src:', video.src);
-    console.log('Current video currentSrc:', video.currentSrc);
+    // console.log('Current video src:', video.src);
+    // console.log('Current video currentSrc:', video.currentSrc);
     
     const data = getData();
     let videoUrl = null;
     
-    console.log('getData() result:', data);
+    // console.log('getData() result:', data);
     
     if (data.length > 0) {
       videoUrl = data[0].vid1;
-      console.log('Video URL from getData():', videoUrl);
+      // console.log('Video URL from getData():', videoUrl);
     } else if (globalData && globalData.data && globalData.data.length > 0) {
       videoUrl = globalData.data[0].vid1;
-      console.log('Video URL from globalData:', videoUrl);
+      // console.log('Video URL from globalData:', videoUrl);
     }
     
-    console.log('Final video URL to set:', videoUrl);
-    console.log('Is this the RECAP video?', videoUrl && videoUrl.includes('RECAP-4.mov'));
+    // console.log('Final video URL to set:', videoUrl);
+    // console.log('Is this the RECAP video?', videoUrl && videoUrl.includes('RECAP-4.mov'));
     
     if (videoUrl) {
       // Direct approach - set the video src directly
       video.src = videoUrl;
       video.load();
-      console.log('Video src set directly to:', videoUrl);
-      console.log('New video src after setting:', video.src);
+      // console.log('Video src set directly to:', videoUrl);
+      // console.log('New video src after setting:', video.src);
       
       // Also update sources
       const sources = video.querySelectorAll('source');
       sources.forEach((source, index) => {
-        console.log(`Source ${index} before:`, source.src);
+        // console.log(`Source ${index} before:`, source.src);
         source.src = videoUrl;
-        console.log(`Source ${index} after:`, source.src);
+        // console.log(`Source ${index} after:`, source.src);
       });
-      console.log('Updated', sources.length, 'source elements');
+      // console.log('Updated', sources.length, 'source elements');
     }
   };
   
@@ -3736,99 +3674,84 @@ document.addEventListener('DOMContentLoaded', () => {
   window.testRandomImageSelection = () => {
     const testString = "http://localhost:5173/src/assets/images/Alexander_Evans_Experience_79.jpg, http://localhost:5173/src/assets/images/Alexander_Evans_Experience_68.jpg, http://localhost:5173/src/assets/images/Alexander_Evans_Experience_53.jpg";
     const imageUrls = testString.split(',').map(url => url.trim()).filter(url => url);
-    console.log('Testing with your string:', testString);
-    console.log('Split URLs:', imageUrls);
+    // console.log('Testing with your string:', testString);
+    // console.log('Split URLs:', imageUrls);
     
     for (let i = 0; i < 5; i++) {
       const timestamp = Date.now();
       const randomSeed = (timestamp + Math.random() * 1000) % 1;
       const randomIndex = Math.floor(randomSeed * imageUrls.length);
-      console.log(`Test ${i + 1}: Index ${randomIndex} -> ${imageUrls[randomIndex]}`);
+      // console.log(`Test ${i + 1}: Index ${randomIndex} -> ${imageUrls[randomIndex]}`);
     }
   };
   
   // Debug function to check shows data
   window.debugShowsData = () => {
     const shows = getShows();
-    console.log('=== SHOWS DATA DEBUG ===');
-    console.log('Total shows:', shows.length);
-    console.log('All shows data:', shows);
+    // console.log('=== SHOWS DATA DEBUG ===');
+    // console.log('Total shows:', shows.length);
+    // console.log('All shows data:', shows);
     
     shows.forEach((show, index) => {
-      console.log(`Show ${index}:`, {
-        showId: show.showId,
-        showName: show.showName,
-        showActive: show.showActive,
-        showActiveType: typeof show.showActive,
-        showImage: show.showImage
-      });
     });
     
     const activeShows = shows.filter(show => show.showActive);
-    console.log('Active shows:', activeShows.length);
-    console.log('Active shows data:', activeShows);
+    // console.log('Active shows:', activeShows.length);
+    // console.log('Active shows data:', activeShows);
   };
   
   // Debug function to check raw global data
   window.debugGlobalData = () => {
-    console.log('=== GLOBAL DATA DEBUG ===');
-    console.log('Global data exists:', !!globalData);
-    console.log('Full global data:', globalData);
+    // console.log('=== GLOBAL DATA DEBUG ===');
+    // console.log('Global data exists:', !!globalData);
+    // console.log('Full global data:', globalData);
     
     if (globalData) {
-      console.log('Shows in global data:', globalData.shows);
-      console.log('Shows length:', globalData.shows ? globalData.shows.length : 'undefined');
-      console.log('Products in global data:', globalData.products);
-      console.log('Products length:', globalData.products ? globalData.products.length : 'undefined');
-      console.log('All data keys:', Object.keys(globalData));
+      // console.log('Shows in global data:', globalData.shows);
+      // console.log('Shows length:', globalData.shows ? globalData.shows.length : 'undefined');
+      // console.log('Products in global data:', globalData.products);
+      // console.log('Products length:', globalData.products ? globalData.products.length : 'undefined');
+      // console.log('All data keys:', Object.keys(globalData));
     }
   };
   
   // Debug function to check products data specifically
   window.debugProductsData = () => {
     const products = getProducts();
-    console.log('=== PRODUCTS DATA DEBUG ===');
-    console.log('Total products:', products.length);
-    console.log('All products data:', products);
+    // console.log('=== PRODUCTS DATA DEBUG ===');
+    // console.log('Total products:', products.length);
+    // console.log('All products data:', products);
     
     products.forEach((product, index) => {
-      console.log(`Product ${index}:`, {
-        productId: product.productId,
-        productName: product.productName,
-        productActive: product.productActive,
-        imageUrl: product.imageUrl,
-        productPrice: product.productPrice,
-        allKeys: Object.keys(product)
-      });
     });
   };
   
   // Debug function to check video data specifically
   window.debugVideoData = () => {
     const data = getData();
-    console.log('=== VIDEO DATA DEBUG ===');
-    console.log('Total data entries:', data.length);
-    console.log('All data:', data);
+    // console.log('=== VIDEO DATA DEBUG ===');
+    // console.log('Total data entries:', data.length);
+    // console.log('All data:', data);
     
     if (data.length > 0) {
       const mainData = data[0];
-      console.log('First data entry:', mainData);
-      console.log('vid1 field:', mainData.vid1);
-      console.log('All keys in first entry:', Object.keys(mainData));
+      // console.log('First data entry:', mainData);
+      // console.log('vid1 field:', mainData.vid1);
+      // console.log('All keys in first entry:', Object.keys(mainData));
     }
     
     // Also check global data directly
-    console.log('Global data directly:', globalData);
+    // console.log('Global data directly:', globalData);
     if (globalData && globalData.data) {
-      console.log('Global data.data:', globalData.data);
+      // console.log('Global data.data:', globalData.data);
     }
   };
   
   // Debug function to check raw Google Apps Script response
   window.debugGoogleScriptResponse = async () => {
-    console.log('=== GOOGLE SCRIPT RESPONSE DEBUG ===');
+    // console.log('=== GOOGLE SCRIPT RESPONSE DEBUG ===');
     try {
-      console.log('Fetching fresh data from Google Apps Script...');
+      // console.log('Fetching fresh data from Google Apps Script...');
       const response = await fetch(CORS_PROXY + encodeURIComponent(GAS_GET_URL), {
         method: 'GET',
         headers: {
@@ -3836,27 +3759,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       
-      console.log('Response status:', response.status);
+      // console.log('Response status:', response.status);
       const responseText = await response.text();
-      console.log('Raw response length:', responseText.length);
-      console.log('Raw response (first 1000 chars):', responseText.substring(0, 1000));
+      // console.log('Raw response length:', responseText.length);
+      // console.log('Raw response (first 1000 chars):', responseText.substring(0, 1000));
       
       const data = JSON.parse(responseText);
-      console.log('Parsed data:', data);
-      console.log('Shows in response:', data.shows);
-      console.log('Shows length in response:', data.shows ? data.shows.length : 'undefined');
-      console.log('Data in response:', data.data);
-      console.log('Data length in response:', data.data ? data.data.length : 'undefined');
+      // console.log('Parsed data:', data);
+      // console.log('Shows in response:', data.shows);
+      // console.log('Shows length in response:', data.shows ? data.shows.length : 'undefined');
+      // console.log('Data in response:', data.data);
+      // console.log('Data length in response:', data.data ? data.data.length : 'undefined');
       
       if (data.data && data.data.length > 0) {
-        console.log('First data entry:', data.data[0]);
-        console.log('vid1 field:', data.data[0].vid1);
+        // console.log('First data entry:', data.data[0]);
+        // console.log('vid1 field:', data.data[0].vid1);
       }
       
       if (data.shows && data.shows.length > 0) {
-        console.log('All shows details:');
+        // console.log('All shows details:');
         data.shows.forEach((show, index) => {
-          console.log(`Show ${index}:`, show);
+          // console.log(`Show ${index}:`, show);
         });
       }
       
@@ -3867,16 +3790,16 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Debug function to test direct Google Script access (without CORS proxy)
   window.testDirectGoogleScript = async () => {
-    console.log('=== TESTING DIRECT GOOGLE SCRIPT ACCESS ===');
+    // console.log('=== TESTING DIRECT GOOGLE SCRIPT ACCESS ===');
     try {
-      console.log('Testing direct access to:', GAS_GET_URL);
+      // console.log('Testing direct access to:', GAS_GET_URL);
       const response = await fetch(GAS_GET_URL, {
         method: 'GET',
         mode: 'no-cors'
       });
       
-      console.log('Direct response status:', response.status);
-      console.log('Direct response type:', response.type);
+      // console.log('Direct response status:', response.status);
+      // console.log('Direct response type:', response.type);
       
     } catch (error) {
       console.error('Direct access error:', error);
@@ -3885,35 +3808,35 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Debug function to check the complete data flow
   window.debugCompleteDataFlow = async () => {
-    console.log('=== COMPLETE DATA FLOW DEBUG ===');
+    // console.log('=== COMPLETE DATA FLOW DEBUG ===');
     
     // Step 1: Check current global data
-    console.log('1. Current global data:');
-    console.log('Global data exists:', !!globalData);
+    // console.log('1. Current global data:');
+    // console.log('Global data exists:', !!globalData);
     if (globalData) {
-      console.log('Shows in global data:', globalData.shows);
-      console.log('Shows length:', globalData.shows ? globalData.shows.length : 'undefined');
+      // console.log('Shows in global data:', globalData.shows);
+      // console.log('Shows length:', globalData.shows ? globalData.shows.length : 'undefined');
     }
     
     // Step 2: Check what getShows() returns
-    console.log('2. getShows() result:');
+    // console.log('2. getShows() result:');
     const shows = getShows();
-    console.log('getShows() result:', shows);
-    console.log('getShows() length:', shows.length);
+    // console.log('getShows() result:', shows);
+    // console.log('getShows() length:', shows.length);
     
     // Step 3: Fetch fresh data and process it
-    console.log('3. Fetching and processing fresh data...');
+    // console.log('3. Fetching and processing fresh data...');
     try {
       const freshData = await fetchGlobalData();
-      console.log('Fresh data processed:', freshData);
-      console.log('Fresh shows:', freshData.shows);
-      console.log('Fresh shows length:', freshData.shows ? freshData.shows.length : 'undefined');
+      // console.log('Fresh data processed:', freshData);
+      // console.log('Fresh shows:', freshData.shows);
+      // console.log('Fresh shows length:', freshData.shows ? freshData.shows.length : 'undefined');
       
       // Step 4: Check getShows() again
-      console.log('4. getShows() after fresh data:');
+      // console.log('4. getShows() after fresh data:');
       const freshShows = getShows();
-      console.log('Fresh getShows() result:', freshShows);
-      console.log('Fresh getShows() length:', freshShows.length);
+      // console.log('Fresh getShows() result:', freshShows);
+      // console.log('Fresh getShows() length:', freshShows.length);
       
     } catch (error) {
       console.error('Error in data flow:', error);
@@ -3922,12 +3845,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Listen for when global data is loaded to update sections
   window.addEventListener('globalDataLoaded', (event) => {
-    console.log('Global data loaded event received:', event.detail);
-    console.log('About to call updateShowsSection...');
+    // console.log('Global data loaded event received:', event.detail);
+    // console.log('About to call updateShowsSection...');
     updateShowsSection();
-    console.log('About to call updateProjectsSection...');
+    // console.log('About to call updateProjectsSection...');
     updateProjectsSection();
-    console.log('About to call updateVideoSection...');
+    // console.log('About to call updateVideoSection...');
     updateVideoSection();
     
     // Re-initialize mobile menu after content updates
@@ -3935,28 +3858,28 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Force video update after a short delay to ensure DOM is ready
     setTimeout(() => {
-      console.log('Forcing video update after data load...');
+      // console.log('Forcing video update after data load...');
       updateVideoSection();
     }, 1000);
   });
 
   // Also try to update sections after a delay in case the DOM isn't ready
   setTimeout(() => {
-    console.log('Delayed section updates...');
+    // console.log('Delayed section updates...');
     if (globalData && globalData.shows) {
-      console.log('Global data exists, calling updateShowsSection');
+      // console.log('Global data exists, calling updateShowsSection');
       updateShowsSection();
     }
     if (globalData && globalData.projects) {
-      console.log('Global data exists, calling updateProjectsSection');
+      // console.log('Global data exists, calling updateProjectsSection');
       updateProjectsSection();
     }
     if (globalData && globalData.data) {
-      console.log('Global data exists, calling updateVideoSection');
+      // console.log('Global data exists, calling updateVideoSection');
       updateVideoSection();
     }
     if (!globalData) {
-      console.log('No global data yet, will try again later');
+      // console.log('No global data yet, will try again later');
     }
   }, 2000);
 
@@ -3969,20 +3892,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // Menu buttons + ticket submit
     setTimeout(() => {
         const menuButtons = document.querySelectorAll('#menu-items button');
-        console.log('Found menu buttons:', menuButtons.length);
+        // console.log('Found menu buttons:', menuButtons.length);
         
         menuButtons.forEach(button => {
       button.addEventListener('click', () => {
                 const sectionName = button.getAttribute('data-section');
                 const targetSection = document.querySelector(`#${sectionName}`);
-        console.log('Button clicked:', sectionName, 'Target section:', targetSection);
+        // console.log('Button clicked:', sectionName, 'Target section:', targetSection);
                 
                 if (targetSection) {
           targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
           
           // Regenerate show cards when shows section is clicked
           if (sectionName === 'shows') {
-            console.log('Shows section clicked - regenerating show cards');
+            // console.log('Shows section clicked - regenerating show cards');
             setTimeout(() => {
               updateShowsSection();
             }, 500); // Small delay to allow scroll to complete
@@ -3990,7 +3913,7 @@ document.addEventListener('DOMContentLoaded', () => {
           
           // Handle video autoplay when video section is clicked
           if (sectionName === 'video') {
-            console.log('Video section clicked - attempting to play video');
+            // console.log('Video section clicked - attempting to play video');
             setTimeout(() => {
               // Update video source first
               updateVideoSection();
@@ -3999,8 +3922,8 @@ document.addEventListener('DOMContentLoaded', () => {
               if (video) {
                 video.muted = true; // Ensure muted for autoplay
                 video.play().catch(error => {
-                  console.log('Autoplay failed:', error);
-                  console.log('User interaction required for video playback');
+                  // console.log('Autoplay failed:', error);
+                  // console.log('User interaction required for video playback');
                 });
               }
             }, 500); // Small delay to allow scroll to complete
@@ -4019,7 +3942,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
   // Rebind after route changes (if your router swaps DOM)
     window.addEventListener('routeChange', (event) => {
-        console.log('Route changed to:', event.detail.path);
+        // console.log('Route changed to:', event.detail.path);
         setTimeout(() => {
             const submitBtn = document.querySelector('.submit-btn');
             if (submitBtn) {
