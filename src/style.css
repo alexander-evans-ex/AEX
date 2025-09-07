@@ -130,6 +130,11 @@ main {
     padding: 0 2rem;
 }
 
+/* Hide line break on desktop by default */
+.mobile-break {
+    display: none;
+}
+
 #intro-content h1 {
     font-size: 2rem;
     font-weight: 300;
@@ -345,6 +350,11 @@ main {
         letter-spacing: 2px;
         padding: 0 3rem;
         line-height: 1.4;
+    }
+    
+    /* Show line break on mobile */
+    .mobile-break {
+        display: block;
     }
     
     /* Adjust intro content positioning */

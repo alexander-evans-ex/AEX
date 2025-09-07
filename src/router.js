@@ -28,7 +28,7 @@ const routes = {
                     <button data-section="contact">Contact</button>
                 </div>
                 <div id="intro-content">
-                    <h1 id="intro-title">Alexander Evans Experience<span class="blinking-cursor">_</span></h1>
+                    <h1 id="intro-title">Alexander Evans<br class="mobile-break"> Experience<span class="blinking-cursor">_</span></h1>
                     <div id="menu-items">
                         <button data-section="about">About</button>
                         <button data-section="carousel">Gallery</button>
