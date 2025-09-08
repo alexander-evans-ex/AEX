@@ -3237,12 +3237,17 @@ function displayProjectDetails(project) {
 // Gallery Page Functions
 // ------------------------------
 function loadGalleryPage() {
-  // console.log('Loading gallery page');
+  console.log('Loading gallery page');
   const galleryGrid = document.getElementById('gallery-grid');
-  if (!galleryGrid) return;
+  if (!galleryGrid) {
+    console.log('Gallery grid not found');
+    return;
+  }
 
+  console.log('Gallery grid found, loading images...');
   // Import the image manifest
   import('./imageManifest.js').then(({ imageManifest }) => {
+    console.log('Image manifest loaded:', imageManifest.length, 'images');
     const s3Prefix = 'https://alexanderevansexs.s3.us-east-2.amazonaws.com/photos/';
     
     // Clear existing content
@@ -3275,8 +3280,12 @@ function loadGalleryPage() {
       galleryGrid.appendChild(imageContainer);
     });
     
+    console.log('Gallery images created, adding copy functionality...');
     // Add click handlers for copy functionality
     addCopyFunctionality();
+  }).catch(error => {
+    console.error('Error loading image manifest:', error);
+    galleryGrid.innerHTML = '<p style="color: white; text-align: center; padding: 2rem;">Error loading gallery images. Please refresh the page.</p>';
   });
 }
 
@@ -4023,7 +4032,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
   // Rebind after route changes (if your router swaps DOM)
     window.addEventListener('routeChange', (event) => {
-        // console.log('Route changed to:', event.detail.path);
+        console.log('Route changed to:', event.detail.path);
         setTimeout(() => {
             const submitBtn = document.querySelector('.submit-btn');
             if (submitBtn) {
@@ -4033,10 +4042,19 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Load gallery page if on gallery route
             if (event.detail.path === '/gallery') {
+                console.log('Loading gallery page from route change');
                 loadGalleryPage();
             }
         }, 100);
     });
+    
+    // Also check if we're already on gallery page on initial load
+    if (window.location.pathname === '/gallery') {
+        console.log('Initial load on gallery page');
+        setTimeout(() => {
+            loadGalleryPage();
+        }, 200);
+    }
 });
 
 // ------------------------------
