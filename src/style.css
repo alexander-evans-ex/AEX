@@ -531,7 +531,7 @@ main {
         margin-bottom: 1rem !important;
     }
     
-    /* Close button for mobile modal */
+    /* Close button for mobile modal - only show on mobile */
     #project-detail-display .close-btn {
         position: fixed !important;
         top: 1rem !important;
@@ -577,6 +577,13 @@ main {
     .project-dot:hover {
         background: rgba(255, 255, 255, 0.8) !important;
         transform: scale(1.1) !important;
+    }
+}
+
+/* Hide close button on desktop screens */
+@media (min-width: 769px) {
+    #project-detail-display .close-btn {
+        display: none !important;
     }
 }
 

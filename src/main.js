@@ -2880,9 +2880,12 @@ function displayProjectDetails(project) {
     }
   }
   
+  // Check if device is mobile for close button
+  const isMobileForCloseBtn = window.innerWidth <= 768;
+  
   detailDisplay.innerHTML = `
     <div style="position: relative;">
-      <button class="close-btn" style="
+      ${isMobileForCloseBtn ? `<button class="close-btn" style="
         position: fixed;
         top: 1rem;
         right: 1rem;
@@ -2895,7 +2898,7 @@ function displayProjectDetails(project) {
         font-size: 1.2rem;
         cursor: pointer;
         z-index: 1001;
-      ">×</button>
+      ">×</button>` : ''}
       
       ${mediaContent}
       
@@ -2926,9 +2929,9 @@ function displayProjectDetails(project) {
     projectsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   
-  // Add close button functionality
+  // Add close button functionality (only on mobile)
   const closeBtn = detailDisplay.querySelector('.close-btn');
-  if (closeBtn) {
+  if (closeBtn && isMobileForCloseBtn) {
     closeBtn.addEventListener('click', () => {
       detailDisplay.remove();
       
