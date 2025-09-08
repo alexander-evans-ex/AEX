@@ -26,7 +26,6 @@ const routes = {
                     <button data-section="projects">Projects</button>
                     <button data-section="video">Video</button>
                     <button data-section="contact">Contact</button>
-                    <a href="/gallery" class="gallery-link">Full Gallery</a>
                 </div>
                 <div id="intro-content">
                     <h1 id="intro-title">Alexander Evans<br class="mobile-break"> Experience<span class="blinking-cursor">_</span></h1>
@@ -37,7 +36,6 @@ const routes = {
                         <button data-section="projects">Projects</button>
                         <button data-section="video">Video</button>
                         <button data-section="contact">Contact</button>
-                        <a href="/gallery" class="gallery-link">Full Gallery</a>
                     </div>
                 </div>
                 <div id="intro" class="dark-section">
