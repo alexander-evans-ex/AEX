@@ -1,11 +1,6 @@
 import express from 'express';
 import Stripe from 'stripe';
 import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || process.env.STRIPE_TEST_SECRET_KEY);
 
@@ -15,9 +10,6 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// Serve static files from the dist directory
-app.use(express.static(path.join(__dirname, 'dist')));
 
 // Create Payment Intent endpoint
 app.post('/api/create-payment-intent', async (req, res) => {
@@ -59,17 +51,6 @@ app.post('/api/create-payment-intent', async (req, res) => {
       message: error.message 
     });
   }
-});
-
-// Handle client-side routing - serve index.html for all non-API routes
-app.get('*', (req, res) => {
-  // Skip API routes
-  if (req.path.startsWith('/api/')) {
-    return res.status(404).json({ error: 'API endpoint not found' });
-  }
-  
-  // Serve the main HTML file for all other routes (client-side routing)
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 app.listen(PORT, () => {

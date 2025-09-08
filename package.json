@@ -9,7 +9,6 @@
     "server": "node server.js",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "npm run build && npm run server",
     "test": "playwright test"
   },
   "devDependencies": {
