@@ -3234,6 +3234,84 @@ function displayProjectDetails(project) {
 }
 
 // ------------------------------
+// Gallery Page Functions
+// ------------------------------
+function loadGalleryPage() {
+  // console.log('Loading gallery page');
+  const galleryGrid = document.getElementById('gallery-grid');
+  if (!galleryGrid) return;
+
+  // Import the image manifest
+  import('./imageManifest.js').then(({ imageManifest }) => {
+    const s3Prefix = 'https://alexanderevansexs.s3.us-east-2.amazonaws.com/photos/';
+    
+    // Clear existing content
+    galleryGrid.innerHTML = '';
+    
+    // Create image elements for each image in the manifest
+    imageManifest.forEach((imagePath, index) => {
+      // Extract filename from the Vite-processed path
+      const filename = imagePath.split('/').pop();
+      const s3Url = s3Prefix + filename;
+      
+      const imageContainer = document.createElement('div');
+      imageContainer.className = 'gallery-item';
+      imageContainer.innerHTML = `
+        <div class="image-wrapper">
+          <img src="${imagePath}" alt="Gallery Image ${index + 1}" loading="lazy">
+          <div class="image-overlay">
+            <button class="copy-btn" data-url="${s3Url}">
+              <span class="copy-icon">📋</span>
+              <span class="copy-text">Copy URL</span>
+            </button>
+          </div>
+        </div>
+        <div class="image-info">
+          <span class="image-number">#${index + 1}</span>
+          <span class="image-filename">${filename}</span>
+        </div>
+      `;
+      
+      galleryGrid.appendChild(imageContainer);
+    });
+    
+    // Add click handlers for copy functionality
+    addCopyFunctionality();
+  });
+}
+
+function addCopyFunctionality() {
+  const copyButtons = document.querySelectorAll('.copy-btn');
+  
+  copyButtons.forEach(button => {
+    button.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const url = button.getAttribute('data-url');
+      
+      try {
+        await navigator.clipboard.writeText(url);
+        
+        // Show success feedback
+        const originalText = button.querySelector('.copy-text').textContent;
+        button.querySelector('.copy-text').textContent = 'Copied!';
+        button.style.background = '#4CAF50';
+        
+        setTimeout(() => {
+          button.querySelector('.copy-text').textContent = originalText;
+          button.style.background = '';
+        }, 2000);
+        
+      } catch (err) {
+        console.error('Failed to copy URL:', err);
+        
+        // Fallback: show URL in a prompt
+        prompt('Copy this URL:', url);
+      }
+    });
+  });
+}
+
+// ------------------------------
 // Dynamic Shop Section Update
 // ------------------------------
 function updateShopSection() {
@@ -3951,6 +4029,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (submitBtn) {
                 submitBtn.removeEventListener('click', handleTicketSubmission);
                 submitBtn.addEventListener('click', handleTicketSubmission);
+            }
+            
+            // Load gallery page if on gallery route
+            if (event.detail.path === '/gallery') {
+                loadGalleryPage();
             }
         }, 100);
     });

@@ -26,6 +26,7 @@ const routes = {
                     <button data-section="projects">Projects</button>
                     <button data-section="video">Video</button>
                     <button data-section="contact">Contact</button>
+                    <a href="/gallery" class="gallery-link">Full Gallery</a>
                 </div>
                 <div id="intro-content">
                     <h1 id="intro-title">Alexander Evans<br class="mobile-break"> Experience<span class="blinking-cursor">_</span></h1>
@@ -36,6 +37,7 @@ const routes = {
                         <button data-section="projects">Projects</button>
                         <button data-section="video">Video</button>
                         <button data-section="contact">Contact</button>
+                        <a href="/gallery" class="gallery-link">Full Gallery</a>
                     </div>
                 </div>
                 <div id="intro" class="dark-section">
@@ -376,6 +378,36 @@ const routes = {
         `,
         title: 'Demo - AEX',
         description: 'Routing system demonstration'
+    },
+    '/gallery': {
+        template: `
+            <div class="page gallery-page">
+                <header>
+                    <h1>Image Gallery</h1>
+                    <nav>
+                        <a href="/">Home</a>
+                        <a href="/about">About</a>
+                        <a href="/gallery">Gallery</a>
+                        <a href="/contact">Contact</a>
+                        <a href="/demo">Demo</a>
+                    </nav>
+                </header>
+                
+                <main>
+                    <section class="gallery-content">
+                        <div class="gallery-header">
+                            <h2>All Images</h2>
+                            <p>Click on any image to copy its S3 URL to your clipboard</p>
+                        </div>
+                        <div id="gallery-grid" class="gallery-grid">
+                            <!-- Images will be dynamically loaded here -->
+                        </div>
+                    </section>
+                </main>
+            </div>
+        `,
+        title: 'Gallery - AEX',
+        description: 'View all images from the Alexander Evans Experience collection'
     },
     '/404': {
         template: `
