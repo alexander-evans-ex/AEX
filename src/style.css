@@ -596,42 +596,6 @@ main {
     color: #fff;
 }
 
-.gallery-page header {
-    padding: 2rem;
-    text-align: center;
-    border-bottom: 1px solid #333;
-}
-
-.gallery-page header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: 300;
-    letter-spacing: 2px;
-}
-
-.gallery-page nav {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-}
-
-.gallery-page nav a {
-    color: #ccc;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border: 1px solid #333;
-    transition: all 0.3s ease;
-}
-
-.gallery-page nav a:hover,
-.gallery-page nav a.active {
-    color: #fff;
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-}
-
 .gallery-content {
     padding: 2rem;
     max-width: 1400px;
@@ -643,11 +607,12 @@ main {
     margin-bottom: 3rem;
 }
 
-.gallery-header h2 {
-    font-size: 2rem;
+.gallery-header h1 {
+    font-size: 2.5rem;
     margin-bottom: 1rem;
     font-family: 'Courier New', Courier, monospace;
     font-weight: 300;
+    letter-spacing: 2px;
 }
 
 .gallery-header p {
@@ -755,43 +720,20 @@ main {
     word-break: break-all;
 }
 
-/* Gallery link styling */
-.gallery-link {
-    color: #fff !important;
+/* Hidden gallery link styling - looks like normal text */
+.hidden-gallery-link {
+    color: inherit !important;
     text-decoration: none;
-    padding: 0.5rem 1rem;
-    border: 1px solid #fff;
-    transition: all 0.3s ease;
-    font-size: 0.9rem;
-    font-family: 'Courier New', Courier, monospace;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
 }
 
-.gallery-link:hover {
-    background: #fff;
-    color: #000 !important;
+.hidden-gallery-link:hover {
+    opacity: 0.7;
 }
 
 /* Mobile gallery styles */
 @media (max-width: 768px) {
-    .gallery-page header {
-        padding: 1rem;
-    }
-    
-    .gallery-page header h1 {
-        font-size: 2rem;
-    }
-    
-    .gallery-page nav {
-        gap: 1rem;
-    }
-    
-    .gallery-page nav a {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.9rem;
-    }
-    
     .gallery-content {
         padding: 1rem;
     }
@@ -801,8 +743,8 @@ main {
         gap: 1rem;
     }
     
-    .gallery-header h2 {
-        font-size: 1.5rem;
+    .gallery-header h1 {
+        font-size: 2rem;
     }
     
     .gallery-header p {

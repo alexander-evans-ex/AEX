@@ -262,7 +262,7 @@ const routes = {
                         </div>
                     </div>
                     <div class="copyright">
-                        <p>&copy; 2025 Alexander Evans Experience. All rights reserved.</p>
+                        <p>&copy; 2025 Alexander Evans <a href="/gallery" class="hidden-gallery-link">Experience</a>. All rights reserved.</p>
                     </div>
                 </div>
             </div>
@@ -380,21 +380,10 @@ const routes = {
     '/gallery': {
         template: `
             <div class="page gallery-page">
-                <header>
-                    <h1>Image Gallery</h1>
-                    <nav>
-                        <a href="/">Home</a>
-                        <a href="/about">About</a>
-                        <a href="/gallery">Gallery</a>
-                        <a href="/contact">Contact</a>
-                        <a href="/demo">Demo</a>
-                    </nav>
-                </header>
-                
                 <main>
                     <section class="gallery-content">
                         <div class="gallery-header">
-                            <h2>All Images</h2>
+                            <h1>Image Gallery</h1>
                             <p>Click on any image to copy its S3 URL to your clipboard</p>
                         </div>
                         <div id="gallery-grid" class="gallery-grid">
